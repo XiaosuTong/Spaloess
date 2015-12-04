@@ -7,6 +7,6 @@ Authors@R: person("Xiaosu", "Tong", email = "tongx@purdue.edu", role = c("aut", 
 Description: More about what it does (maybe more than one line)
 License: MIT
 Suggests:
-  roxygen2 (>= 5.0.0)
+    roxygen2 (>= 5.0.0)
 Roxygen: list(wrap = FALSE)
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1
