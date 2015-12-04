@@ -1,5 +1,14 @@
 # Spatial Locally Weighted Regression #
 
+This package contains enhancements to the `loess` implementation that comes with base
+R. 
+
+Here are some of the added features over `loess`:
+- can predict NA directly without calling `predict.loess` after `loess` to get fitted
+value at NA locations
+- add `distance` argument which can be different type of distance function: "Euclid",
+"Latlong" for great circle distance, and "Mahal" for Mahalanobis
+- add a function which can generate kd-tree from a dataset.
 
 
 ### Fortran code ###
@@ -8,11 +17,11 @@ v is a long vector with length lv which contains the whole information about kd-
 things. Memory is assigned by using Calloc() function in C, `loess_workspace()`.
 ```
 lowesb -> ehg131 
-		   |-> ehg126(built kd-tree)
+           |-> ehg126(built kd-tree)
            |-> ehg124(not sure what this function is for)
            |-> ehg139(fit at vertices, vval passed into as s(0:od, nv))
                 |-> ehg127(calculates the fitting, called for each vertex(nv), s(0:od) is passed into)
-				|	 |-> ehg106(select q-th smallest by partial sorting)
+                |    |-> ehg106(select q-th smallest by partial sorting)
                 |-> ehg137(try to compare the cutting points xi with vertex)
                 |-> ehg128(interpolation function is called here based on vval2)
 ```	
@@ -38,7 +47,7 @@ lowese -> ehg133 -> ehg128(interpolation, delta is X for each newobs)
 ```
   1. For each vertex, the fitted value g(hat) and d derivatives of g(hat) which estimated by taking the
 slopes of the locally linear or locally quadratic fit are saved and used to do the interpolation.
-  2. Ech cell boundary consists of four segments that meet at vertices. On each segment, function value
+  2. Each cell boundary consists of four segments that meet at vertices. On each segment, function value
 g(hat) are interpolated using the unique *cubic polynomial* determined by the function and derivative 
 data at the vertices, this cubic polynomial should be an univariate interpolation since there is only one
 dimension at edges of cells; normal derivatives are *interpolated linearly* along the segment.
