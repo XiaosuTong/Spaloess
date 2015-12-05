@@ -11,7 +11,7 @@ value at NA locations
 - add a function which can generate kd-tree from a dataset.
 
 
-### Fortran code ###
+### Fortran Code ###
 - lowesf: locally weigted regression directly on original data
 ```
 lowesf -> ehg136(does some error checking and then pass arguments to ehg127)
@@ -76,6 +76,12 @@ are interpolated using cubic polynomial using function and derivative data at th
 `gpn` is the linearly interpolation to calculate project derivative on north side of edge, here two derivative 
 values used, `g0(2)` and `g0(2)`, are respective to orthogonal direction. That is why derivatives are interpolated
 linearly.
+
+### Updates of Fortran Code ###
+As we mentioned above, the real computation engine of locally weighted regression
+fitting is carried out in `ehg127` which is called by function `ehg136` and `ehg139`
+First we update the `ehg127` to including distance type as an input argument, then
+the distance will be calculated differently.
 
 ### Blending Interpolation ###
 In order to understand the blending, first thing we can have a look at is the bilinearly blending on the unit
