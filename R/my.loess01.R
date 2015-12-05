@@ -6,9 +6,6 @@
 # loess1 is only used for exactly fitting using predict.loess.
 # We have to specify control = loess.control(surface = "direct") in predict.loess
 
-# dyn.load("src/Spaloess.so")
-
-
 #' My Loess Function Title
 #'
 #' My Loess details

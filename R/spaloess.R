@@ -3,6 +3,8 @@
 #' The first layer of the Spatial locally weighted regression, using local fitting with different 
 #' type of distance calculation.
 #'
+#' @useDynLib Spaloess
+#'
 #' @param formula 
 #'     FORMULA DESCRIPTION. DO THIS FOR EACH ONE
 #' @param data 
@@ -17,7 +19,7 @@
 #'     the action to be taken with missing values in the response or predictors.  The default is 
 #'     given by 'getOption("na.action")'.
 #' @param distance 
-#'     Options: "Euclid", "Mahal", or "Latlong" which is for great circle distance
+#'     Options: "Euclid", or "Latlong" which is for great circle distance
 #' @param model 
 #'     Should the model frame be returned?
 #' @param span 
@@ -37,12 +39,14 @@
 #' @param normalize 
 #'     Should the predictors be normalized to a common scale if there is more than one?  The 
 #'     normalization used is to set the 10% trimmed standard deviation to one. Set to false for 
-#'     "Latlong" distance function, and true for "Mahal" distance.
+#'     "Latlong" distance.
 #' @param family 
 #'     If 'gaussian' fitting is by least-squares, and if 'symmetric' a re-descending M estimator is 
 #'     used with Tukey's bi-weight function.
 #' @param method 
 #'     Fit the model or just extract the model frame.
+#' @param na.pred
+#'     Should missing observations in the dataset be predicted. Default is TRUE.
 #' @param control 
 #'     control parameters: see 'loess.control'.
 #' @param ...
@@ -65,7 +69,8 @@
 #'     #names(testdata)[1:2] <- c("LON","LAT")
 #'     cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong")
 
-spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
+
+spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, na.pred = TRUE, 
     span = 0.05, enp.target, degree = 2L, parametric = FALSE, distance = "Latlong",
     drop.square = FALSE, normalize = FALSE, family = c("gaussian", 
         "symmetric"), method = c("loess", "model.frame"), control = loess.control(...), 
@@ -138,7 +143,7 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE,
  
  ## After checking all arguments' validity, pass all valid arguments into newsimpleLoess function. 
   fit <- newsimpleLoess(
-    y, x, w, span, degree, parametric, drop.square, 
+    y, x, w, span, degree, distance, parametric, drop.square,
     normalize, control$statistics, control$surface, control$cell, 
     iterations, control$trace.hat
   )
@@ -146,9 +151,15 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE,
   fit$call <- match.call()
   fit$terms <- mt
   fit$xnames <- nmx
-  fit$x <- x
-  fit$y <- y
-  fit$weights <- w
+
+  if(na.pred) {
+    print("I am going to add prediction of NA here!")
+  } else {
+    fit$x <- x
+    fit$y <- y
+    fit$weights <- w
+  }
+
   if (model) fit$model <- mf 
   fit$na.action <- attr(mf, "na.action")
   fit
