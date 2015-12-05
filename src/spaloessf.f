@@ -265,6 +265,8 @@ c     sort by distance
       do 3 i3=1,n
          dist(i3)=0
     3 continue
+
+    
 c############################################
 c      do 4 j=1,dd
 cc i4 is the target vertex
@@ -287,6 +289,9 @@ c#############################################
 c        PRINT *, dist(i3)
 c        PRINT *, "#######################"
     4 continue
+
+
+
 c##############################################
 c after the do4 and do5 distance from
 c every point of original data to target vertex is calculated
@@ -492,12 +497,10 @@ c     smooth
     7       continue
     6    continue
       end if
-c#######################################################################
 c     psi is all 0 with length n, pi has been sorted in ehg124
-c      call ehg139(v,nvmax,nv,n,d,nf,f,x,pi,psi,y,rw,trl,kernel,k,dist,
-c     +     dist,eta,b,d,w,diagl,vval2,nc,vc,a,xi,lo,hi,c,vhit,rcond,
-c     +     sing,dd,tdeg,cdeg,lq,lf,setlf,vval)
-c#######################################################################
+      call ehg139(v,nvmax,nv,n,d,nf,f,x,pi,psi,y,rw,trl,kernel,k,dist,
+     +     dist,eta,b,d,w,diagl,vval2,nc,vc,a,xi,lo,hi,c,vhit,rcond,
+     +     sing,dd,tdeg,cdeg,lq,lf,setlf,vval)
       return
       end
 

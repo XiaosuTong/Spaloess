@@ -85,8 +85,9 @@ static void loess_free(void)
 }
 
 void
+/* 7th input argument distance is an int which specify the distance calculation method */
 loess_raw(double *y, double *x, double *weights, double *robust, int *d,
-	  int *n, double *span, int *degree, int *nonparametric,
+	  int *n, int *distance, double *span, int *degree, int *nonparametric,
 	  int *drop_square, int *sum_drop_sqr, double *cell,
 	  char **surf_stat, double *surface, int *parameter,
 	  int *a, double *xi, double *vert, double *vval, double *diagonal,
@@ -96,7 +97,14 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
     double *hat_matrix, *LL, dzero=0.0;
 
     *trL = 0;
-
+/*    
+    if( *distance == 1) {
+      printf("The distance is Great circle \n");
+    }
+    else if ( *distance == 0) {
+      printf("The distance is Euclid \n");
+    }
+*/
     loess_workspace(d, n, span, degree, nonparametric, drop_square,
 		    sum_drop_sqr, setLf);
     v[1] = *cell;/* = v(2) in Fortran (!) */
