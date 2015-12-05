@@ -12,6 +12,11 @@ value at NA locations
 
 
 ### Fortran code ###
+- lowesf: locally weigted regression directly on original data
+```
+lowesf -> ehg136(does some error checking and then pass arguments to ehg127)
+            |-> ehg127(calculates the fitting, called for each observations N)
+```
 - lowesb: kd-tree construction and fitting
 v is a long vector with length lv which contains the whole information about kd-tree and some other
 things. Memory is assigned by using Calloc() function in C, `loess_workspace()`.
