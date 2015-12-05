@@ -5,10 +5,10 @@
 \title{Spatially Local Polynomial Regression Fitting}
 \usage{
 spaloess(formula, data, weights, subset, na.action, model = FALSE,
-  span = 0.05, enp.target, degree = 2L, parametric = FALSE,
-  distance = "Latlong", drop.square = FALSE, normalize = FALSE,
-  family = c("gaussian", "symmetric"), method = c("loess", "model.frame"),
-  control = loess.control(...), ...)
+  na.pred = TRUE, span = 0.05, enp.target, degree = 2L,
+  parametric = FALSE, distance = "Latlong", drop.square = FALSE,
+  normalize = FALSE, family = c("gaussian", "symmetric"),
+  method = c("loess", "model.frame"), control = loess.control(...), ...)
 }
 \arguments{
 \item{formula}{FORMULA DESCRIPTION. DO THIS FOR EACH ONE}
@@ -26,6 +26,8 @@ given by 'getOption("na.action")'.}
 
 \item{model}{Should the model frame be returned?}
 
+\item{na.pred}{Should missing observations in the dataset be predicted. Default is TRUE.}
+
 \item{span}{The parameter alpha which controls the degree of smoothing.}
 
 \item{enp.target}{An alternative way to specify 'span', as the approximate equivalent number of parameters to 
@@ -37,14 +39,14 @@ the ‘Note’.)}
 \item{parametric}{should any terms be fitted globally rather than locally? Terms can be specified by name, 
 number or as a logical vector of the same length as the number of predictors.}
 
-\item{distance}{Options: "Euclid", "Mahal", or "Latlong" which is for great circle distance}
+\item{distance}{Options: "Euclid", or "Latlong" which is for great circle distance}
 
 \item{drop.square}{For fits with more than one predictor and 'degree = 2', should the quadratic term be dropped 
 for particular predictors?  Terms are specified in the same way as for 'parametric'.}
 
 \item{normalize}{Should the predictors be normalized to a common scale if there is more than one?  The 
 normalization used is to set the 10% trimmed standard deviation to one. Set to false for 
-"Latlong" distance function, and true for "Mahal" distance.}
+"Latlong" distance.}
 
 \item{family}{If 'gaussian' fitting is by least-squares, and if 'symmetric' a re-descending M estimator is 
 used with Tukey's bi-weight function.}
@@ -64,7 +66,14 @@ This spaloess function is the first wrapper of the spatial loess fitting procedu
     second wrapper function: newsimpleLoess
 }
 \examples{
-    cars.lo <- loess(dist ~ speed, cars, distance = "Mahal")
+    set.seed(66)
+    x1 <- rnorm(100, mean=-100, sd=10)
+    x2 <- rnorm(100, mean=38, sd=4)
+    y <- 0.1*x1 + 1*x2 - 10 + rnorm(100, 0, 1.3)
+    testdata <- data.frame(LON = x1, LAT = x2, tmax = y)
+    #names(testdata)[1:2] <- c("x1", "x2")
+    #names(testdata)[1:2] <- c("LON","LAT")
+    cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong")
 }
 \author{
 Xiaosu Tong, based on 'loess' function of B. D. Ripley, and 'cloess' package of Cleveland,
