@@ -96,9 +96,9 @@ newsimpleLoess <- function (y, x, weights, span = 0.05, degree = 2L, distance = 
         stop("dimension for great circle distance must be 2 in spatial loess")
     
     if (distance == "Latlong") {
-        dist <- 1
+        xtdist <- 1
     } else if (distance == "Euclid") {
-        dist <- 0
+        xtdist <- 0
     }
 
     ## The real computation engine of loess is in c code named "loess_raw"
@@ -122,7 +122,7 @@ newsimpleLoess <- function (y, x, weights, span = 0.05, degree = 2L, distance = 
             myv = rep(0, 5000)
 
             ## the 7th argument is added by Xiaosu Tong, which is the distance calculation flag
-            z <- .C("loess_raw", y, x, weights, robust, D, N, as.integer(dist),
+            z <- .C("loess_raw", y, x, weights, robust, D, N, as.integer(xtdist),
                 as.double(span), as.integer(degree), as.integer(nonparametric), 
                 as.integer(order.drop.sqr), as.integer(sum.drop.sqr), 
                 as.double(span * cell), as.character(surf.stat), 
@@ -163,26 +163,26 @@ newsimpleLoess <- function (y, x, weights, span = 0.05, degree = 2L, distance = 
             vert2 = data.frame(matrix(z$vert2, ncol = D))[1:pars["nv"],] 
         )
     }
-    if (iterations > 1L) {                                                                #
-        pseudovalues <- .Fortran("lowesp", N, as.double(y), as.double(z$fitted.values),   #
-            as.double(weights), as.double(robust), integer(N),                            #
+    if (iterations > 1L) {                                                                
+        pseudovalues <- .Fortran("lowesp", N, as.double(y), as.double(z$fitted.values),   
+            as.double(weights), as.double(robust), integer(N),                            
             pseudovalues = double(N))$pseudovalues    
         ## the 7th argument is added by Xiaosu Tong, which is the distance calculation flag
-        zz <- .C("loess_raw", as.double(pseudovalues), x, weights,                        #
-            weights, D, N, as.integer(dist), as.double(span), as.integer(degree),         #
-            as.integer(nonparametric), as.integer(order.drop.sqr),                        #
-            as.integer(sum.drop.sqr), as.double(span * cell),                             #
-            as.character(surf.stat), temp = double(N), parameter = integer(7L),           #
-            a = integer(max.kd), xi = double(max.kd), vert = double(2L *                  #
-                D), vval = double((D + 1L) * max.kd), diagonal = double(N),               #
-            trL = double(1L), delta1 = double(1L), delta2 = double(1L),                   #
-            0L)                                                                           #
-        pseudo.resid <- pseudovalues - zz$temp                                            #
-    }                                                                                     #
-    sum.squares <- if (iterations <= 1L)                                                  #
-        sum(weights * fitted.residuals^2)                                                 #
-    else sum(weights * pseudo.resid^2)                                                    #
-    enp <- one.delta + 2 * trace.hat.out - N                                              #
+        zz <- .C("loess_raw", as.double(pseudovalues), x, weights,                        
+            weights, D, N, as.integer(xtdist), as.double(span), as.integer(degree),         
+            as.integer(nonparametric), as.integer(order.drop.sqr),                        
+            as.integer(sum.drop.sqr), as.double(span * cell),                             
+            as.character(surf.stat), temp = double(N), parameter = integer(7L),           
+            a = integer(max.kd), xi = double(max.kd), vert = double(2L *                  
+                D), vval = double((D + 1L) * max.kd), diagonal = double(N),               
+            trL = double(1L), delta1 = double(1L), delta2 = double(1L),                   
+            0L)                                                                           
+        pseudo.resid <- pseudovalues - zz$temp                                            
+    }                                                                                     
+    sum.squares <- if (iterations <= 1L)                                                  
+        sum(weights * fitted.residuals^2)                                                 
+    else sum(weights * pseudo.resid^2)                                                    
+    enp <- one.delta + 2 * trace.hat.out - N                                              
                                                                                           
     s <- sqrt(sum.squares/one.delta)                                                      
     pars <- list(

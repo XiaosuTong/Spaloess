@@ -48,13 +48,13 @@ void loess_grow (int *parameter, int *a,
 /* These (and many more) are in ./loessf.f : */
 void F77_NAME(lowesa)(double*, int*, int*, int*, int*, double*, double*);
 void F77_NAME(lowesb)(double*, double*, double*, double*, int*, int*, int*,
-		      int*, double*);
+		      int*, double*, int*);
 void F77_NAME(lowesc)(int*, double*, double*, double*, double*, double*);
 void F77_NAME(lowesd)(int*, int*, int*, int*, double*, int*, int*,
 		      double*, int*, int*, int*);
 void F77_NAME(lowese)(int*, int*, int*, double*, int*, double*, double*);
 void F77_NAME(lowesf)(double*, double*, double*, int*, int*, int*, double*,
-		      int*, double*, double*, int*, double*);
+		      int*, double*, double*, int*, double*, int*);
 void F77_NAME(lowesl)(int*, int*, int*, double*, int*, double*, double*);
 void F77_NAME(ehg169)(int*, int*, int*, int*, int*, int*,
 		      double*, int*, double*, int*, int*, int*);
@@ -97,7 +97,8 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
     double *hat_matrix, *LL, dzero=0.0;
 
     *trL = 0;
-/*    
+
+/*  add by Xiaosu Tong for testing purpose   
     if( *distance == 1) {
       printf("The distance is Great circle \n");
     }
@@ -109,16 +110,16 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
 		    sum_drop_sqr, setLf);
     v[1] = *cell;/* = v(2) in Fortran (!) */
     if(!strcmp(*surf_stat, "interpolate/none")) {
-	F77_CALL(lowesb)(x, y, robust, &dzero, &zero, iv, &liv, &lv, v);
+	F77_CALL(lowesb)(x, y, robust, &dzero, &zero, iv, &liv, &lv, v, distance);
 	F77_CALL(lowese)(iv, &liv, &lv, v, n, x, surface);
 	loess_prune(parameter, a, xi, vert, vval);
     }
     else if (!strcmp(*surf_stat, "direct/none")) {
 	F77_CALL(lowesf)(x, y, robust, iv, &liv, &lv, v, n, x,
-			 &dzero, &zero, surface);
+			 &dzero, &zero, surface, distance);
     }
     else if (!strcmp(*surf_stat, "interpolate/1.approx")) {
-	F77_CALL(lowesb)(x, y, weights, diagonal, &one, iv, &liv, &lv, v);
+	F77_CALL(lowesb)(x, y, weights, diagonal, &one, iv, &liv, &lv, v, distance);
 	F77_CALL(lowese)(iv, &liv, &lv, v, n, x, surface);
 	nsing = iv[29];
 	for(i = 0; i < (*n); i++) *trL = *trL + diagonal[i];
@@ -126,7 +127,7 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
 	loess_prune(parameter, a, xi, vert, vval);
     }
     else if (!strcmp(*surf_stat, "interpolate/2.approx")) {
-	F77_CALL(lowesb)(x, y, robust, &dzero, &zero, iv, &liv, &lv, v);
+	F77_CALL(lowesb)(x, y, robust, &dzero, &zero, iv, &liv, &lv, v, distance);
 	F77_CALL(lowese)(iv, &liv, &lv, v, n, x, surface);
 	nsing = iv[29];
 	F77_CALL(ehg196)(&tau, d, span, trL);
@@ -135,7 +136,7 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
     }
     else if (!strcmp(*surf_stat, "direct/approximate")) {
 	F77_CALL(lowesf)(x, y, weights, iv, &liv, &lv, v, n, x,
-			diagonal, &one, surface);
+			diagonal, &one, surface, distance);
 	nsing = iv[29];
 	for(i = 0; i < (*n); i++) *trL = *trL + diagonal[i];
 	F77_CALL(lowesa)(trL, n, d, &tau, &nsing, one_delta, two_delta);
@@ -143,7 +144,7 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
     else if (!strcmp(*surf_stat, "interpolate/exact")) {
 	hat_matrix = (double *) R_alloc((*n)*(*n), sizeof(double));
 	LL = (double *) R_alloc((*n)*(*n), sizeof(double));
-	F77_CALL(lowesb)(x, y, weights, diagonal, &one, iv, &liv, &lv, v);
+	F77_CALL(lowesb)(x, y, weights, diagonal, &one, iv, &liv, &lv, v, distance);
 	F77_CALL(lowesl)(iv, &liv, &lv, v, n, x, hat_matrix);
 	F77_CALL(lowesc)(n, hat_matrix, LL, trL, one_delta, two_delta);
 	F77_CALL(lowese)(iv, &liv, &lv, v, n, x, surface);
@@ -153,7 +154,7 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
 	hat_matrix = (double *) R_alloc((*n)*(*n), sizeof(double));
 	LL = (double *) R_alloc((*n)*(*n), sizeof(double));
 	F77_CALL(lowesf)(x, y, weights, iv, &liv, &lv, v, n, x,
-			hat_matrix, &two, surface);
+			hat_matrix, &two, surface, distance);
 	F77_CALL(lowesc)(n, hat_matrix, LL, trL, one_delta, two_delta);
 	k = (*n) + 1;
 	for(i = 0; i < (*n); i++)
@@ -166,7 +167,7 @@ void
 loess_dfit(double *y, double *x, double *x_evaluate, double *weights,
 	   double *span, int *degree, int *nonparametric,
 	   int *drop_square, int *sum_drop_sqr,
-	   int *d, int *n, int *m, double *fit)
+	   int *d, int *n, int *m, double *fit, int *distance)
 {
     int zero = 0;
     double dzero = 0.0;
@@ -174,7 +175,7 @@ loess_dfit(double *y, double *x, double *x_evaluate, double *weights,
     loess_workspace(d, n, span, degree, nonparametric, drop_square,
 		    sum_drop_sqr, &zero);
     F77_CALL(lowesf)(x, y, weights, iv, &liv, &lv, v, m, x_evaluate,
-		    &dzero, &zero, fit);
+		    &dzero, &zero, fit, distance);
     loess_free();
 }
 
@@ -183,7 +184,7 @@ loess_dfitse(double *y, double *x, double *x_evaluate, double *weights,
 	     double *robust, int *family, double *span, int *degree,
 	     int *nonparametric, int *drop_square,
 	     int *sum_drop_sqr,
-	     int *d, int *n, int *m, double *fit, double *L)
+	     int *d, int *n, int *m, double *fit, double *L, int *distance)
 {
     int zero = 0, two = 2;
     double dzero = 0.0;
@@ -192,13 +193,13 @@ loess_dfitse(double *y, double *x, double *x_evaluate, double *weights,
 		    sum_drop_sqr, &zero);
     if(*family == GAUSSIAN)
 	F77_CALL(lowesf)(x, y, weights, iv, &liv, &lv, v, m,
-			x_evaluate, L, &two, fit);
+			x_evaluate, L, &two, fit, distance);
     else if(*family == SYMMETRIC)
     {
 	F77_CALL(lowesf)(x, y, weights, iv, &liv, &lv, v, m,
-			x_evaluate, L, &two, fit);
+			x_evaluate, L, &two, fit, distance);
 	F77_CALL(lowesf)(x, y, robust, iv, &liv, &lv, v, m,
-			x_evaluate, &dzero, &zero, fit);
+			x_evaluate, &dzero, &zero, fit, distance);
     }
     loess_free();
 }
@@ -216,7 +217,7 @@ void
 loess_ise(double *y, double *x, double *x_evaluate, double *weights,
 	  double *span, int *degree, int *nonparametric,
 	  int *drop_square, int *sum_drop_sqr, double *cell,
-	  int *d, int *n, int *m, double *fit, double *L)
+	  int *d, int *n, int *m, double *fit, double *L, int* distance)
 {
     int zero = 0, one = 1;
     double dzero = 0.0;
@@ -224,7 +225,7 @@ loess_ise(double *y, double *x, double *x_evaluate, double *weights,
     loess_workspace(d, n, span, degree, nonparametric, drop_square,
 		    sum_drop_sqr, &one);
     v[1] = *cell;
-    F77_CALL(lowesb)(x, y, weights, &dzero, &zero, iv, &liv, &lv, v);
+    F77_CALL(lowesb)(x, y, weights, &dzero, &zero, iv, &liv, &lv, v, distance);
     F77_CALL(lowesl)(iv, &liv, &lv, v, m, x_evaluate, L);
     loess_free();
 }

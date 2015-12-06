@@ -228,20 +228,22 @@ c     bottom of while loop
     4 return
       end
 
-
+c by Xiaosu: the length of each line can not over a limit(unkown), so
+c            add the new input argument xtdist to the third line
       subroutine ehg127(q,n,d,nf,f,x,psi,y,rw,kernel,k,dist,eta,b,od,w,
-     +     rcond,sing,sigma,u,e,dgamma,qraux,work,tol,dd,tdeg,cdeg,s)
+     +     rcond,sing,sigma,u,e,dgamma,qraux,work,tol,dd,tdeg,cdeg,s,
+     +     xtdist)
       integer column,d,dd,execnt,i,i3,i9,info,inorm2,j,jj,jpvt,k,kernel,
-     +     n,nf,od,sing,tdeg
+     +     n,nf,od,sing,tdeg,xtdist
       integer cdeg(8),psi(n)
       double precision machep,f,i1,i10,i2,i4,i5,i6,i7,i8,rcond,rho,scal,
-     +     tol, R, tong, tong2, fang1, fang2, pi
+     +     tol
       double precision g(15),sigma(15),u(15,15),e(15,15),b(nf,k),
      +     colnor(15),dist(n),eta(nf),dgamma(15),q(d),qraux(15),rw(n),
      +     s(0:od),w(nf),work(15),x(n,d),y(n)
 
       integer idamax
-      double precision d1mach, ddot
+      double precision d1mach, ddot, R, tong, tong2, fang1, fang2, pi
 
       external ehg106,ehg182,ehg184,dqrdc,dqrsl,dsvdc
       external idamax, d1mach, ddot
@@ -253,9 +255,13 @@ c     E -> g
 c     MachEps -> machep
 c     V -> e
 c     X -> b
-c R is the radius of the earth
+c####################################
+c Add by Xiaosu Tong
+c R is the radius of the earth      
       R = 3963.34000000
       pi = 4*atan(1.D0)
+      PRINT *, xtdist
+c####################################
       execnt=execnt+1
       if(execnt.eq.1)then
 c     initialize  d1mach(4) === 1 / DBL_EPSILON === 2^52  :
@@ -276,6 +282,8 @@ c            dist(i3)=dist(i3)+(x(i3,j)-i4)**2
 c    5    continue
 c    4 continue
 c#############################################
+c#############################################
+c Add by Xiaosu Tong
       fang1 = (q(1)*pi)/180.D0
       fang2 = (q(2)*pi)/180.D0
       do 4 i3=1,n
@@ -286,10 +294,12 @@ c#############################################
           tong=sign(1.d0, tong)
         end if
         dist(i3)=R*ACOS(tong)
+c       Add by Xiaosu Tong
 c        PRINT *, dist(i3)
+c        PRINT *, R
 c        PRINT *, "#######################"
     4 continue
-
+c##############################################
 
 
 c##############################################
@@ -454,10 +464,10 @@ c        bug fix 2006-07-04 for k=1, od>1.   (thanks btyner@gmail.com)
 
       subroutine ehg131(x,y,rw,trl,diagl,kernel,k,n,d,nc,ncmax,vc,nv,
      +     nvmax,nf,f,a,c,hi,lo,pi,psi,v,vhit,vval,xi,dist,eta,b,ntol,
-     +     fd,w,vval2,rcond,sing,dd,tdeg,cdeg,lq,lf,setlf)
+     +     fd,w,vval2,rcond,sing,dd,tdeg,cdeg,lq,lf,setlf,xtdist)
       logical setlf
       integer identi,d,dd,i1,i2,j,k,kernel,n,nc,ncmax,nf,ntol,nv,
-     +     nvmax,sing,tdeg,vc
+     +     nvmax,sing,tdeg,vc,xtdist
       integer lq(nvmax,nf),a(ncmax),c(vc,ncmax),cdeg(8),hi(ncmax),
      +     lo(ncmax),pi(n),psi(n),vhit(nvmax)
       double precision f,fd,rcond,trl
@@ -500,7 +510,7 @@ c     smooth
 c     psi is all 0 with length n, pi has been sorted in ehg124
       call ehg139(v,nvmax,nv,n,d,nf,f,x,pi,psi,y,rw,trl,kernel,k,dist,
      +     dist,eta,b,d,w,diagl,vval2,nc,vc,a,xi,lo,hi,c,vhit,rcond,
-     +     sing,dd,tdeg,cdeg,lq,lf,setlf,vval)
+     +     sing,dd,tdeg,cdeg,lq,lf,setlf,vval,xtdist)
       return
       end
 
@@ -1262,9 +1272,9 @@ c     m = number of x values at which to evaluate
 c     f = span
 c     nf = min(n, floor(f * n))
       subroutine ehg136(u,lm,m,n,d,nf,f,x,psi,y,rw,kernel,k,dist,eta,b,
-     +     od,o,ihat,w,rcond,sing,dd,tdeg,cdeg,s)
+     +     od,o,ihat,w,rcond,sing,dd,tdeg,cdeg,s,xtdist)
       integer identi,d,dd,i,i1,ihat,info,j,k,kernel,l,lm,m,n,nf,
-     +     od,sing,tdeg
+     +     od,sing,tdeg,xtdist
       integer cdeg(8),psi(n)
       double precision f,i2,rcond,scale,tol
       double precision o(m,n),sigma(15),e(15,15),g(15,15),b(nf,k),
@@ -1274,6 +1284,11 @@ c     nf = min(n, floor(f * n))
       external ehg127,ehg182,dqrsl
       double precision ddot
       external ddot
+
+c#########################
+c     Add by Xiaosu Tong
+c      xtdist=0
+c#########################
 
 c     V -> g
 c     U -> e
@@ -1291,7 +1306,7 @@ c     X -> b
     5    continue
          call ehg127(q,n,d,nf,f,x,psi,y,rw,kernel,k,dist,eta,b,od,w,
      +        rcond,sing,sigma,e,g,dgamma,qraux,work,tol,dd,tdeg,cdeg,
-     +        s(0,l))
+     +        s(0,l), xtdist)
          if(ihat.eq.1)then
 c           $L sub {l,l} =
 c           V sub {1,:} SIGMA sup {+} U sup T
@@ -1378,10 +1393,10 @@ c called from lowesb() ... compute fit ..?..?...
 c somewhat similar to ehg136
       subroutine ehg139(v,nvmax,nv,n,d,nf,f,x,pi,psi,y,rw,trl,kernel,k,
      +     dist,phi,eta,b,od,w,diagl,vval2,ncmax,vc,a,xi,lo,hi,c,vhit,
-     +     rcond,sing,dd,tdeg,cdeg,lq,lf,setlf,s)
+     +     rcond,sing,dd,tdeg,cdeg,lq,lf,setlf,s,xtdist)
       logical setlf
       integer identi,d,dd,i,i2,i3,i5,i6,ii,ileaf,info,j,k,kernel,
-     +     l,n,ncmax,nf,nleaf,nv,nvmax,od,sing,tdeg,vc
+     +     l,n,ncmax,nf,nleaf,nv,nvmax,od,sing,tdeg,vc, xtdist
       integer lq(nvmax,nf),a(ncmax),c(vc,ncmax),cdeg(8),hi(ncmax),
      +     leaf(256),lo(ncmax),pi(n),psi(n),vhit(nvmax)
       DOUBLE PRECISION f,i1,i4,i7,rcond,scale,term,tol,trl
@@ -1396,6 +1411,11 @@ c somewhat similar to ehg136
       external ehg128
       DOUBLE PRECISION DDOT
       external DDOT
+
+c#########################
+c     Add by Xiaosu Tong
+c      xtdist=1
+c#########################
 
 c     V -> e
 c     Identity -> identi
@@ -1422,7 +1442,7 @@ c     l2fit with trace(L)
     8    continue
          call ehg127(q,n,d,nf,f,x,psi,y,rw,kernel,k,dist,eta,b,od,w,
      +        rcond,sing,sigma,u,e,DGAMMA,qraux,work,tol,dd,tdeg,cdeg,
-     +        s(0,l))
+     +        s(0,l),xtdist)
          if(trl.ne.0)then
 c           invert $psi$
             do 9 i5=1,n
@@ -1537,9 +1557,9 @@ c           $Lf sub {:,l,:} = V SIGMA sup {+} U sup T Q sup T W$
       return
       end
 
-      subroutine lowesb(xx,yy,ww,diagl,infl,iv,liv,lv,wv)
+      subroutine lowesb(xx,yy,ww,diagl,infl,iv,liv,lv,wv,xtdist)
       logical infl
-      integer liv, lv
+      integer liv, lv, xtdist
       integer iv(*)
       DOUBLE PRECISION xx(*),yy(*),ww(*),diagl(*),wv(*)
 c Var
@@ -1571,7 +1591,7 @@ c Var
      +     iv(iv(23)),wv(iv(13)),wv(iv(12)),wv(iv(15)),wv(iv(16)),
      +     wv(iv(18)),ifloor(iv(3)*wv(2)),wv(3),wv(iv(26)),wv(iv(24)),
      +     wv(4),iv(30),iv(33),iv(32),iv(41),iv(iv(25)),wv(iv(34)),
-     +     setlf)
+     +     setlf, xtdist)
       if(iv(14).lt.iv(6)+DBLE(iv(4))/2.D0)then
          call ehg183('k-d tree limited by memory; nvmax=',
      +        iv(14),1,1)
@@ -1707,8 +1727,8 @@ c     initialize permutation
       end
 
 c "direct" (non-"interpolate") fit aka predict() :
-      subroutine lowesf(xx,yy,ww,iv,liv,lv,wv,m,z,l,ihat,s)
-      integer liv,lv,m,ihat
+      subroutine lowesf(xx,yy,ww,iv,liv,lv,wv,m,z,l,ihat,s,xtdist)
+      integer liv,lv,m,ihat,xtdist
 c     m = number of x values at which to evaluate
       integer iv(*)
       double precision xx(*),yy(*),ww(*),wv(*),z(m,1),l(m,*),s(m)
@@ -1735,7 +1755,7 @@ c          ehg136(u,lm,m, n,    d,    nf,   f,   x,   psi,     y ,rw,
 c          kernel,  k,     dist,       eta,       b,     od,o,ihat,
      +     iv(20),iv(29),wv(iv(15)),wv(iv(16)),wv(iv(18)),0,l,ihat,
 c              w,     rcond,sing,    dd,    tdeg,cdeg,  s)
-     +     wv(iv(26)),wv(4),iv(30),iv(33),iv(32),iv(41),s)
+     +     wv(iv(26)),wv(4),iv(30),iv(33),iv(32),iv(41),s,xtdist)
       return
       end
 
