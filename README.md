@@ -12,6 +12,11 @@ value at NA locations
 
 
 ### Fortran Code ###
+
+First of all, most of procedures we mentioned below are Fortran subroutines, which is 
+a block of code that performs some operation on the input variables, and as a result 
+of calling the subroutine, the input variables are modified.
+
 - lowesf: locally weigted regression directly on original data
 ```
 lowesf -> ehg136(does some error checking and then pass arguments to ehg127)
