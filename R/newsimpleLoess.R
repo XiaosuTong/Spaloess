@@ -2,7 +2,7 @@
 #'
 #' The second layer of the Spatial locally weighted regression. It calls the computation engine 
 #' functions wrote in C and Fortran. Notice, it has to be called by spaloess function, do not
-#' call itself.
+#' call newsimpleLoess directly.
 #'
 #' @param formula FORMULA DESCRIPTION. DO THIS FOR EACH ONE
 #' @param data
@@ -36,18 +36,9 @@
 #'      iterations of an M-estimation procedure with Tukey's bi-weight are used.  Be aware that as the
 #'      initial value is the least-squares fit, this need not be a very resistant fit. It can be 
 #'      important to tune the control list to achieve acceptable speed.  See 'loess.control' for details.
-#' @examples
-#'     set.seed(66)
-#'     x1 <- rnorm(100, mean=-100, sd=10)
-#'     x2 <- rnorm(100, mean=38, sd=4)
-#'     y <- 0.1*x1 + 1*x2 - 10 + rnorm(100, 0, 1.3)
-#'     testdata <- data.frame(LON = x1, LAT = x2, tmax = y)
-#'     #names(testdata)[1:2] <- c("x1", "x2")
-#'     #names(testdata)[1:2] <- c("LON","LAT")
-#'     cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong")
 
 newsimpleLoess <- function (y, x, weights, span = 0.05, degree = 2L, distance = "Latlong", parametric = FALSE, 
-    drop.square = FALSE, normalize = TRUE, statistics = "approximate", 
+    drop.square = FALSE, normalize = FALSE, statistics = "approximate", 
     surface = "interpolate", cell = 0.2, iterations = 1L, trace.hat = "exact") 
 {
     D <- as.integer(NCOL(x))
@@ -142,7 +133,7 @@ newsimpleLoess <- function (y, x, weights, span = 0.05, degree = 2L, distance = 
             ## if current iteration is less than the total number of iteration time, calculate the
             ## robust factor based on fitted residuals.
             if (j < iterations) { 
-                robust <- .Fortran(C_lowesw, fitted.residuals, N, robust = double(N), integer(N))$robust
+                robust <- .Fortran("lowesw", fitted.residuals, N, robust = double(N), integer(N))$robust
             }
         }
     }

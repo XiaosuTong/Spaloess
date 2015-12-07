@@ -6,7 +6,7 @@
 #' @useDynLib Spaloess
 #'
 #' @param formula 
-#'     FORMULA DESCRIPTION. DO THIS FOR EACH ONE
+#'     a formula specifying the numeric response and one to four numeric predictors.
 #' @param data 
 #'     an optional data from, list or environment containing the variables in the model. If 
 #'     not found in 'data', the variables are taken from 'environment', typically the environment 
