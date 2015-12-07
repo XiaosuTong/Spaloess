@@ -268,9 +268,9 @@ c     sort by distance
       do 3 i3=1,n
          dist(i3)=0
     3 continue
-c#### Add by Xiaosu Tong #######################
+c#### Modified by Xiaosu Tong #######################
       if(xtdist.eq.1)then 
-        PRINT *, xtdist
+c        PRINT *, xtdist
         do 4 j=1,dd
 c i4 is the target vertex
           i4=q(j)
@@ -279,7 +279,7 @@ c i4 is the target vertex
     5     continue
     4   continue
       else if(xtdist.eq.0)then
-        PRINT *, xtdist
+c        PRINT *, xtdist
         do 6 i3=1,n
           tong = SIN(x(i3,2))*SIN(q(2))
           tong2 = abs(q(1)-x(i3,1))
@@ -312,10 +312,12 @@ c     compute neighborhood weights
     7    continue
       else
          do 8 i3=1,nf
-c#################################################
-c           original weights, need a sqare root
-c           w(i3)=dsqrt(dist(psi(i3))/rho)
+c####  Modified by Xiaosu Tong ###################
+           if(xtdist.eq.1)then
+            w(i3)=dsqrt(dist(psi(i3))/rho)
+           else if(xtdist.eq.0)then
             w(i3)=dist(psi(i3))/rho
+           end if
 c#################################################
     8    continue
          do 9 i3=1,nf
