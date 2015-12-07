@@ -237,13 +237,13 @@ c            add the new input argument xtdist to the third line
      +     n,nf,od,sing,tdeg,xtdist
       integer cdeg(8),psi(n)
       double precision machep,f,i1,i10,i2,i4,i5,i6,i7,i8,rcond,rho,scal,
-     +     tol
+     +     tol, R, tong, tong2, pi
       double precision g(15),sigma(15),u(15,15),e(15,15),b(nf,k),
      +     colnor(15),dist(n),eta(nf),dgamma(15),q(d),qraux(15),rw(n),
      +     s(0:od),w(nf),work(15),x(n,d),y(n)
 
       integer idamax
-      double precision d1mach, ddot, R, tong, tong2, fang1, fang2, pi
+      double precision d1mach, ddot
 
       external ehg106,ehg182,ehg184,dqrdc,dqrsl,dsvdc
       external idamax, d1mach, ddot
@@ -255,13 +255,10 @@ c     E -> g
 c     MachEps -> machep
 c     V -> e
 c     X -> b
-c####################################
-c Add by Xiaosu Tong
-c R is the radius of the earth      
+c### Add by Xiaosu Tong ##########
       R = 3963.34000000
       pi = 4*atan(1.D0)
-      PRINT *, xtdist
-c####################################
+c#################################
       execnt=execnt+1
       if(execnt.eq.1)then
 c     initialize  d1mach(4) === 1 / DBL_EPSILON === 2^52  :
@@ -271,37 +268,28 @@ c     sort by distance
       do 3 i3=1,n
          dist(i3)=0
     3 continue
-
-    
-c############################################
-c      do 4 j=1,dd
-cc i4 is the target vertex
-c         i4=q(j)
-c         do 5 i3=1,n
-c            dist(i3)=dist(i3)+(x(i3,j)-i4)**2
-c    5    continue
-c    4 continue
-c#############################################
-c#############################################
-c Add by Xiaosu Tong
-      fang1 = (q(1)*pi)/180.D0
-      fang2 = (q(2)*pi)/180.D0
-      do 4 i3=1,n
-        tong = SIN((x(i3,2)*pi)/180)*SIN(fang2)
-        tong2 = abs(fang1-(x(i3,1)*pi)/180.D0)
-        tong = tong+COS((x(i3,2)*pi)/180.D0)*COS(fang2)*COS(tong2)
-        if(abs(tong).gt.1)then
-          tong=sign(1.d0, tong)
-        end if
-        dist(i3)=R*ACOS(tong)
-c       Add by Xiaosu Tong
-c        PRINT *, dist(i3)
-c        PRINT *, R
-c        PRINT *, "#######################"
-    4 continue
-c##############################################
-
-
+c#### Add by Xiaosu Tong #######################
+      if(xtdist.eq.1)then 
+        PRINT *, xtdist
+        do 4 j=1,dd
+c i4 is the target vertex
+          i4=q(j)
+          do 5 i3=1,n
+            dist(i3)=dist(i3)+(x(i3,j)-i4)**2
+    5     continue
+    4   continue
+      else if(xtdist.eq.0)then
+        PRINT *, xtdist
+        do 6 i3=1,n
+          tong = SIN(x(i3,2))*SIN(q(2))
+          tong2 = abs(q(1)-x(i3,1))
+          tong = tong+COS(x(i3,2))*COS(q(2))*COS(tong2)
+          if(abs(tong).gt.1)then
+            tong=sign(1.d0, tong)
+          end if
+          dist(i3)=R*ACOS(tong)
+    6   continue
+      end if
 c##############################################
 c after the do4 and do5 distance from
 c every point of original data to target vertex is calculated
@@ -314,26 +302,26 @@ c larger than 1
       end if
 c     compute neighborhood weights
       if(kernel.eq.2)then
-         do 6 i=1,nf
+         do 7 i=1,nf
             if(dist(psi(i)).lt.rho)then
                i1=dsqrt(rw(psi(i)))
             else
                i1=0
             end if
             w(i)=i1
-    6    continue
+    7    continue
       else
-         do 7 i3=1,nf
+         do 8 i3=1,nf
 c#################################################
 c           original weights, need a sqare root
 c           w(i3)=dsqrt(dist(psi(i3))/rho)
             w(i3)=dist(psi(i3))/rho
 c#################################################
-    7    continue
-         do 8 i3=1,nf
+    8    continue
+         do 9 i3=1,nf
 c           weights update
             w(i3)=dsqrt(rw(psi(i3))*(1-w(i3)**3)**3)
-    8    continue
+    9    continue
       end if
       if(dabs(w(idamax(nf,w,1))).eq.0)then
          call ehg184('at ',q(1),dd,1)
@@ -344,78 +332,78 @@ c           weights update
       end if
 c     fill design matrix
       column=1
-      do 9 i3=1,nf
+      do 10 i3=1,nf
          b(i3,column)=w(i3)
-    9 continue
+   10 continue
       if(tdeg.ge.1)then
-         do 10 j=1,d
+         do 11 j=1,d
             if(cdeg(j).ge.1)then
                column=column+1
                i5=q(j)
-               do 11 i3=1,nf
+               do 12 i3=1,nf
                   b(i3,column)=w(i3)*(x(psi(i3),j)-i5)
-   11          continue
+   12          continue
             end if
-   10    continue
+   11    continue
       end if
       if(tdeg.ge.2)then
-         do 12 j=1,d
+         do 13 j=1,d
             if(cdeg(j).ge.1)then
                if(cdeg(j).ge.2)then
                   column=column+1
                   i6=q(j)
-                  do 13 i3=1,nf
+                  do 14 i3=1,nf
                      b(i3,column)=w(i3)*(x(psi(i3),j)-i6)**2
-   13             continue
+   14             continue
                end if
-               do 14 jj=j+1,d
+               do 15 jj=j+1,d
                   if(cdeg(jj).ge.1)then
                      column=column+1
                      i7=q(j)
                      i8=q(jj)
-                     do 15 i3=1,nf
+                     do 16 i3=1,nf
                         b(i3,column)=w(i3)*(x(psi(i3),j)-i7)*(x(psi(i3),
      +jj)-i8)
-   15                continue
+   16                continue
                   end if
-   14          continue
+   15          continue
             end if
-   12    continue
+   13    continue
          k=column
       end if
-      do 16 i3=1,nf
+      do 17 i3=1,nf
          eta(i3)=w(i3)*y(psi(i3))
-   16 continue
+   17 continue
 c     equilibrate columns
-      do 17 j=1,k
+      do 18 j=1,k
          scal=0
-         do 18 inorm2=1,nf
+         do 19 inorm2=1,nf
             scal=scal+b(inorm2,j)**2
-   18    continue
+   19    continue
          scal=dsqrt(scal)
          if(0.lt.scal)then
-            do 19 i3=1,nf
+            do 20 i3=1,nf
                b(i3,j)=b(i3,j)/scal
-   19       continue
+   20       continue
             colnor(j)=scal
          else
             colnor(j)=1
          end if
-   17 continue
+   18 continue
 c     singular value decomposition
       call dqrdc(b,nf,nf,k,qraux,jpvt,work,0)
       call dqrsl(b,nf,nf,k,qraux,eta,work,eta,eta,work,work,1000,info)
-      do 20 i9=1,k
-         do 21 i3=1,k
+      do 21 i9=1,k
+         do 22 i3=1,k
             u(i3,i9)=0
-   21    continue
-   20 continue
-      do 22 i=1,k
-         do 23 j=i,k
+   22    continue
+   21 continue
+      do 23 i=1,k
+         do 24 j=i,k
 c FIXME: this has i = 3 vs bound 2 in a ggplot2 test
             u(i,j)=b(i,j)
-   23    continue
-   22 continue
+   24    continue
+   23 continue
       call dsvdc(u,15,k,k,sigma,g,u,15,e,15,work,21,info)
       if(.not.(info.eq.0))then
          call ehg182(182)
@@ -436,29 +424,29 @@ c FIXME: this has i = 3 vs bound 2 in a ggplot2 test
          end if
       end if
 c     compensate for equilibration
-      do 24 j=1,k
+      do 25 j=1,k
          i10=colnor(j)
-         do 25 i3=1,k
+         do 26 i3=1,k
             e(j,i3)=e(j,i3)/i10
-   25    continue
-   24 continue
+   26    continue
+   25 continue
 c     solve least squares problem
-      do 26 j=1,k
+      do 27 j=1,k
          if(tol.lt.sigma(j))then
             i2=ddot(k,u(1,j),1,eta,1)/sigma(j)
          else
             i2=0.d0
          end if
          dgamma(j)=i2
-   26 continue
-      do 27 j=0,od
+   27 continue
+      do 28 j=0,od
 c        bug fix 2006-07-04 for k=1, od>1.   (thanks btyner@gmail.com)
          if(j.lt.k)then
             s(j)=ddot(k,e(j+1,1),15,dgamma,1)
          else
             s(j)=0.d0
          end if
-   27 continue
+   28 continue
       return
       end
 

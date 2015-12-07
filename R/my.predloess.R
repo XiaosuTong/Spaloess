@@ -21,6 +21,7 @@
 #' @param family
 #' @param method
 #' @param control
+#' @param distance
 #' @param ...
 #' @author Xiaosu Tong
 #' @export
@@ -28,8 +29,7 @@
 #'   a <- my.loess1(dist ~ speed, cars, control = loess.control(surface = "direct"))
 #'   str(a)
 #'   my.predict.loess(a, data.frame(speed = seq(5, 30, 1)))
-my.predict.loess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass,
-    ...)
+my.predict.loess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, distance = "Latlong", ...)
 {
     if (!inherits(object, "loess"))
         stop("first argument must be a \"loess\" object")
@@ -44,7 +44,7 @@ my.predict.loess <- function (object, newdata = NULL, se = FALSE, na.action = na
     res <- with(object, my.predLoess(y, x, newx, s, weights, pars$robust,
         pars$span, pars$degree, pars$normalize, pars$parametric,
         pars$drop.square, pars$surface, pars$cell, pars$family,
-        kd, divisor, se = se))
+        kd, divisor, se = se, distance))
     if (!is.null(out.attrs <- attr(newdata, "out.attrs"))) {
         if (se) {
             res$fit <- array(res$fit, out.attrs$dim, out.attrs$dimnames)
@@ -77,14 +77,14 @@ my.predict.loess <- function (object, newdata = NULL, se = FALSE, na.action = na
 #' @param family
 #' @param method
 #' @param control
+#' @param distance
 #' @param ...
 #' @author Xiaosu Tong
 #' @export
 #' @examples
 #' my.loess1()
 my.predLoess <- function (y, x, newx, s, weights, robust, span, degree, normalize,
-    parametric, drop.square, surface, cell, family, kd, divisor,
-    se = FALSE)
+    parametric, drop.square, surface, cell, family, kd, divisor, se = FALSE, distance)
 {
     D <- NCOL(x)
     N <- NROW(x)
@@ -114,7 +114,7 @@ my.predLoess <- function (y, x, newx, s, weights, robust, span, degree, normaliz
                 as.integer(degree), as.integer(nonparametric),
                 as.integer(order.drop.sqr), as.integer(sum.drop.sqr),
                 as.integer(D), as.integer(N), as.integer(M),
-                fit = double(M), L = double(N * M))[c("fit",
+                fit = double(M), L = double(N * M), distance)[c("fit",
                 "L")]
             fit[!nas] <- z$fit
             ses <- (matrix(z$L^2, M, N)/rep(weights, rep(M, N))) %*%
@@ -127,7 +127,7 @@ my.predLoess <- function (y, x, newx, s, weights, robust, span, degree, normaliz
                 as.integer(degree), as.integer(nonparametric),
                 as.integer(order.drop.sqr), as.integer(sum.drop.sqr),
                 as.integer(D), as.integer(N), as.integer(M),
-                fit = double(M), PACKAGE = "Spaloess")$fit
+                fit = double(M), distance)$fit
         }
     }
     else {
@@ -144,7 +144,7 @@ my.predLoess <- function (y, x, newx, s, weights, robust, span, degree, normaliz
             fit[inside] <- .C("loess_ifit", as.integer(kd$parameter),
                 as.integer(kd$a), as.double(kd$xi), as.double(kd$vert),
                 as.double(kd$vval), as.integer(M1), as.double(x.evaluate[inside,
-                  ]), fit = double(M1))$fit
+                  ]), fit = double(M1), distance)$fit
         if (se) {
             se.fit <- rep(NA_real_, M)
             if (any(inside)) {
@@ -153,7 +153,7 @@ my.predLoess <- function (y, x, newx, s, weights, robust, span, degree, normaliz
                   as.integer(nonparametric), as.integer(order.drop.sqr),
                   as.integer(sum.drop.sqr), as.double(span *
                     cell), as.integer(D), as.integer(N), as.integer(M1),
-                  double(M1), L = double(N * M1))$L
+                  double(M1), L = double(N * M1), distance)$L
                 tmp <- (matrix(L^2, M1, N)/rep(weights, rep(M1,
                   N))) %*% rep(1, N)
                 se.fit[inside] <- drop(s * sqrt(tmp))
