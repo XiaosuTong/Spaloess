@@ -5,7 +5,7 @@
 \title{My Loess Function Title}
 \usage{
 my.predict.loess(object, newdata = NULL, se = FALSE, na.action = na.pass,
-  ...)
+  distance = "Latlong", ...)
 }
 \arguments{
 \item{formula}{FORMULA DESCRIPTION. DO THIS FOR EACH ONE}

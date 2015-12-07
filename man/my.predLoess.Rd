@@ -5,7 +5,8 @@
 \title{My Loess Function Title}
 \usage{
 my.predLoess(y, x, newx, s, weights, robust, span, degree, normalize,
-  parametric, drop.square, surface, cell, family, kd, divisor, se = FALSE)
+  parametric, drop.square, surface, cell, family, kd, divisor, se = FALSE,
+  distance)
 }
 \arguments{
 \item{formula}{FORMULA DESCRIPTION. DO THIS FOR EACH ONE}
