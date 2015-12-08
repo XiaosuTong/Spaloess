@@ -23,7 +23,7 @@
 #' @param model 
 #'     Should the model frame be returned?
 #' @param span 
-#'     The parameter alpha which controls the degree of smoothing.
+#'     The parameter alpha which controls the portion of data points used in the local fit.
 #' @param enp.target 
 #'     An alternative way to specify 'span', as the approximate equivalent number of parameters to 
 #'     be used.
@@ -45,13 +45,12 @@
 #'     used with Tukey's bi-weight function.
 #' @param method 
 #'     Fit the model or just extract the model frame.
-#' @param na.pred
+#' @param napred
 #'     Should missing observations in the dataset be predicted. Default is TRUE.
 #' @param control 
 #'     control parameters: see 'loess.control'.
-#' @param napred
-#'     logical variable, should NAs in the response variable be predicted. Default is TRUE.
 #' @param ...
+#'     arguments passed to or from other methods.
 #' @details
 #'     This spaloess function is the first wrapper of the spatial loess fitting procedure. It checks
 #'     all the validity of all input arguments, and formats arguments like drop,square, parametric.
@@ -67,8 +66,6 @@
 #'     x2 <- rnorm(100, mean=38, sd=4)
 #'     y <- 0.1*x1 + 1*x2 - 10 + rnorm(100, 0, 1.3)
 #'     testdata <- data.frame(LON = x1, LAT = x2, tmax = y)
-#'     #names(testdata)[1:2] <- c("x1", "x2")
-#'     #names(testdata)[1:2] <- c("LON","LAT")
 #'     cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong")
 
 

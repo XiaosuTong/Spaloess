@@ -1,38 +1,45 @@
-##############################################
-##predict loess function
-##############################################
-
-
-#' My Loess Function Title
+#' Spatially Local Polynomial Regression Prediction
 #'
-#' My Loess details
-#' @param formula FORMULA DESCRIPTION. DO THIS FOR EACH ONE
-#' @param data
-#' @param weights
-#' @param subset
+#' The first layer of the prediction of Spatial locally weighted regression. Mainly used as
+#' prediction function for the NAs in the original data set.
+#'
+#' @param object
+#'     an object fitted by ‘loess’.
+#' @param newdata
+#'     an optional data frame in which to look for variables with which to predict, or a 
+#'     matrix or vector containing exactly the variables needs for prediction.  If missing, 
+#'     the original data points are used.
+#' @param se
+#'     should standard errors be computed? Default is FALSE
 #' @param na.action
-#' @param model
-#' @param span
-#' @param enp.target
-#' @param degree
-#' @param parametric
-#' @param drop.square
-#' @param normalize
-#' @param family
-#' @param method
-#' @param control
-#' @param distance
+#'     function determining what should be done with missing values in data frame ‘newdata’.  
+#'     The default is to predict ‘NA’.
 #' @param ...
-#' @author Xiaosu Tong
+#'     arguments passed to or from other methods.
+#' @details
+#'     This is the first layer of prediction function of spatial locally weigted regression.
+#'     In the spaloess function, NA will be removed from the fitting. By passing the spaloess
+#'     object and NA observations to predloess, predction at the locations of NA is carried out.
+#'
+#'     When the fit was made using ‘surface = "interpolate"’ (the default), ‘predictLoessf’ 
+#'     will not extrapolate - so points outside an axis-aligned hypercube enclosing the 
+#'     original data will have missing (‘NA’) predictions and standard errors.
+#' @author 
+#'     Xiaosu Tong, based on 'loess' function of B. D. Ripley, and 'cloess' package of Cleveland,
+#'     Grosse and Shyu.  
 #' @export
 #' @examples
-#'   a <- my.loess1(dist ~ speed, cars, control = loess.control(surface = "direct"))
-#'   str(a)
-#'   my.predict.loess(a, data.frame(speed = seq(5, 30, 1)))
-predictLoessf <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, ...)
+#'     set.seed(66)
+#'     x1 <- rnorm(100, mean=-100, sd=10)
+#'     x2 <- rnorm(100, mean=38, sd=4)
+#'     y <- 0.1*x1 + 1*x2 - 10 + rnorm(100, 0, 1.3); y[1:2] <- NA
+#'     testdata <- data.frame(LON = x1, LAT = x2, tmax = y)
+#'     cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong")
+
+predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, ...)
 {
-    if (!inherits(object, "loess")) {
-        stop("first argument must be a \"loess\" object")
+    if (!inherits(object, "spaloess")) {
+        stop("first argument must be a \"spaloess\" object")
     }
 
     if (is.null(newdata) && !se) {
