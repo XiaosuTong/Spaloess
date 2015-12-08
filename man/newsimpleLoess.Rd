@@ -62,7 +62,6 @@ The second layer of the Spatial locally weigted regression fitting. In this func
    input arguments which are critical for the fit are checked, like the dimension of design
    matrix can only be less than or equal to 4. Or input x can only by lat and lon if distance
    is "Latlong".
-
    Fitting is done locally.  That is, for the fit at point x, the fit is made using points in 
    a neighborhood of x, weighted by their distance from x (with differences in 'parametric' 
    variables being ignored when computing the distance).  The size of the neighborhood is 
