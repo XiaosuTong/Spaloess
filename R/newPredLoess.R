@@ -77,6 +77,13 @@ newPredLoess <- function (y, x, newx, s, weights, robust, span, degree, normaliz
     order.drop.sqr <- (2L - drop.square)[order.parametric]
     storage.mode(x) <- "double"
     storage.mode(y) <- "double"
+
+    if (distance == "Latlong") {
+        xtdist <- 1
+    } else if (distance == "Euclid") {
+        xtdist <- 0
+    }
+
     if (surface == "direct") {
         nas <- rowSums(is.na(newx)) > 0L
         fit <- rep(NA_real_, length(nas))
@@ -90,7 +97,7 @@ newPredLoess <- function (y, x, newx, s, weights, robust, span, degree, normaliz
                 as.integer(degree), as.integer(nonparametric),
                 as.integer(order.drop.sqr), as.integer(sum.drop.sqr),
                 as.integer(D), as.integer(N), as.integer(M),
-                fit = double(M), L = double(N * M), distance)[c("fit",
+                fit = double(M), L = double(N * M), as.integer(xtdist))[c("fit",
                 "L")]
             fit[!nas] <- z$fit
             ses <- (matrix(z$L^2, M, N)/rep(weights, rep(M, N))) %*%
@@ -103,7 +110,7 @@ newPredLoess <- function (y, x, newx, s, weights, robust, span, degree, normaliz
                 as.integer(degree), as.integer(nonparametric),
                 as.integer(order.drop.sqr), as.integer(sum.drop.sqr),
                 as.integer(D), as.integer(N), as.integer(M),
-                fit = double(M), distance)$fit
+                fit = double(M), as.integer(xtdist))$fit
         }
     }
     else {
@@ -120,7 +127,7 @@ newPredLoess <- function (y, x, newx, s, weights, robust, span, degree, normaliz
             fit[inside] <- .C("loess_ifit", as.integer(kd$parameter),
                 as.integer(kd$a), as.double(kd$xi), as.double(kd$vert),
                 as.double(kd$vval), as.integer(M1), as.double(x.evaluate[inside,
-                  ]), fit = double(M1), distance)$fit
+                  ]), fit = double(M1), as.integer(xtdist))$fit
         if (se) {
             se.fit <- rep(NA_real_, M)
             if (any(inside)) {
@@ -129,7 +136,7 @@ newPredLoess <- function (y, x, newx, s, weights, robust, span, degree, normaliz
                   as.integer(nonparametric), as.integer(order.drop.sqr),
                   as.integer(sum.drop.sqr), as.double(span *
                     cell), as.integer(D), as.integer(N), as.integer(M1),
-                  double(M1), L = double(N * M1), distance)$L
+                  double(M1), L = double(N * M1), as.integer(xtdist))$L
                 tmp <- (matrix(L^2, M1, N)/rep(weights, rep(M1,
                   N))) %*% rep(1, N)
                 se.fit[inside] <- drop(s * sqrt(tmp))

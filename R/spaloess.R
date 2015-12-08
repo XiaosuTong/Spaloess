@@ -95,7 +95,17 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
 
   ## nmx is the independent variables name.
   nmx <- as.character(attr(mt, "variables"))[-(1L:2)]
+  ## nmy is the response variable name
+  nmy <- as.character(attr(mt, "variables"))[2]
+
   x <- mf[, nmx, drop = FALSE]
+
+  ## get the locations of NAs
+  if(napred) {
+    index <- is.na(data[,nmy])
+    xna <- data[index, nmx]
+  }
+
 
   if (any(sapply(x, is.factor))) stop("predictors must all be numeric")
   
@@ -150,17 +160,21 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   fit$call <- match.call()
   fit$terms <- mt
   fit$xnames <- nmx
-
-  if(napred) {
-    print("I am going to add prediction of NA here!")
-  } else {
-    fit$x <- x
-    fit$y <- y
-    fit$weights <- w
-  }
+  fit$x <- x
+  fit$y <- y
+  fit$weights <- w
 
   if (model) fit$model <- mf 
   fit$na.action <- attr(mf, "na.action")
+  
+  if (napred) {
+    naPrediction <- predloess(fit, newdata = xna)
+    fit$pred <- cbind(rbind(x, xna), fitted = c(fit$fitted, naPrediction))
+  } else {
+    fit$pred <- as.data.frame(cbind(x, fitted = fit$fitted))
+  }
+  rownames(fit$pred) <- NULL
+
   fit
 
 }

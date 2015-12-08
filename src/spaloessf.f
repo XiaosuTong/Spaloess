@@ -272,7 +272,7 @@ c#### Modified by Xiaosu Tong #######################
       if(xtdist.eq.1)then 
 c        PRINT *, xtdist
         do 4 j=1,dd
-c i4 is the target vertex
+c i4 is the target vertex or observation
           i4=q(j)
           do 5 i3=1,n
             dist(i3)=dist(i3)+(x(i3,j)-i4)**2
@@ -324,8 +324,8 @@ c             xtdist is 0 means it is Great circle distance calculation
             else if(xtdist.eq.0)then
               w(i3)=dist(psi(i3))/rho
             end if
-c#################################################
     8    continue
+c#################################################    
          do 9 i3=1,nf
 c           weights update
             w(i3)=dsqrt(rw(psi(i3))*(1-w(i3)**3)**3)
