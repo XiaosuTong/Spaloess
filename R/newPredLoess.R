@@ -62,8 +62,6 @@
 newPredLoess <- function (y, x, newx, s, weights, robust, span, degree, normalize,
     parametric, drop.square, surface, cell, family, kd, divisor, se = FALSE, distance)
 {
-    print(distance)
-    print("\n")
     D <- NCOL(x)
     N <- NROW(x)
     M <- NROW(newx)

@@ -54,6 +54,18 @@ predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, 
         as.matrix(newdata)
     }
 
+    nmx <- colnames(newx)
+    if (object$pars$distance == "Latlong" | object$pars$distance == "L") {
+      if("la" %in% tolower(substr(nmx, 1, 2)) & "lo" %in% tolower(substr(nmx, 1, 2))) {
+        for(ii in c("la","lo")) {
+          indx <- grep(ii, tolower(substr(nmx, 1, 2)))
+          newx[, indx] <- 2 * pi * newx[, indx]/360
+        }
+      } else {
+        stop("predictors must be longitude and latitude for great circle distance") 
+      }
+    }  
+     
     res <- with(object, newPredLoess(y, x, newx, s, weights, pars$robust,
         pars$span, pars$degree, pars$normalize, pars$parametric,
         pars$drop.square, pars$surface, pars$cell, pars$family,
