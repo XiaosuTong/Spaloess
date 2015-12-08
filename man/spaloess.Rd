@@ -26,9 +26,9 @@ given by 'getOption("na.action")'.}
 
 \item{model}{Should the model frame be returned?}
 
-\item{napred}{logical variable, should NAs in the response variable be predicted. Default is TRUE.}
+\item{napred}{Should missing observations in the dataset be predicted. Default is TRUE.}
 
-\item{span}{The parameter alpha which controls the degree of smoothing.}
+\item{span}{The parameter alpha which controls the portion of data points used in the local fit.}
 
 \item{enp.target}{An alternative way to specify 'span', as the approximate equivalent number of parameters to 
 be used.}
@@ -55,7 +55,7 @@ used with Tukey's bi-weight function.}
 
 \item{control}{control parameters: see 'loess.control'.}
 
-\item{na.pred}{Should missing observations in the dataset be predicted. Default is TRUE.}
+\item{...}{arguments passed to or from other methods.}
 }
 \description{
 The first layer of the Spatial locally weighted regression, using local fitting with different 
@@ -73,8 +73,6 @@ This spaloess function is the first wrapper of the spatial loess fitting procedu
     x2 <- rnorm(100, mean=38, sd=4)
     y <- 0.1*x1 + 1*x2 - 10 + rnorm(100, 0, 1.3)
     testdata <- data.frame(LON = x1, LAT = x2, tmax = y)
-    #names(testdata)[1:2] <- c("x1", "x2")
-    #names(testdata)[1:2] <- c("LON","LAT")
     cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong")
 }
 \author{

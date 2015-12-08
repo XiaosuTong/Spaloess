@@ -11,6 +11,46 @@ newsimpleLoess(y, x, weights, span = 0.05, degree = 2L,
 }
 \arguments{
 \item{y}{the response variable in the form of vector}
+
+\item{x}{a data.frame of the design matrix}
+
+\item{weights}{optional initial weights for each case}
+
+\item{span}{The parameter alpha which controls the portion of data points used in the local fit.}
+
+\item{degree}{The degree of the polynomials to be used, normally 1 or 2. (Degree 0 is also allowed, but see 
+the ‘Note’.)}
+
+\item{distance}{Specify the method of distance calculation. Options: "Euclid", or "Latlong" which is for great 
+circle distance}
+
+\item{parametric}{should any terms be fitted globally rather than locally? Terms can be specified by name, 
+number or as a logical vector of the same length as the number of predictors.}
+
+\item{drop.square}{For fits with more than one predictor and 'degree = 2', should the quadratic term be dropped 
+for particular predictors?  Terms are specified in the same way as for 'parametric'.}
+
+\item{normalize}{Should the predictors be normalized to a common scale if there is more than one?  The 
+normalization used is to set the 10% trimmed standard deviation to one. Set to false for 
+"Latlong" distance.}
+
+\item{statistics}{should the statistics be computed exactly or approximately? 
+Exact computation can be very slow. Can be either "approximate" or "exact", default is
+"approximate".}
+
+\item{surface}{should the fitted surface be computed exactly or via interpolation from a kd tree? 
+can be either "interpolate" or "direct", default is "interpolate".}
+
+\item{cell}{if interpolation is used this controls the accuracy of the approximation via the maximum 
+number of points in a cell in the kd tree. Cells with more than ‘floor(n*span*cell)’ points
+are subdivided.}
+
+\item{iterations}{the number of iterations used in robust fitting.}
+
+\item{trace.hat}{should the trace of the smoother matrix be computed exactly or approximately? 
+It is recommended to use the approximation for more than about 1000 data points.}
+
+\item{...}{arguments passed to or from other methods.}
 }
 \description{
 The second layer of the Spatial locally weighted regression. It calls the computation engine 
@@ -18,20 +58,25 @@ functions wrote in C and Fortran. Notice, it has to be called by spaloess functi
 call newsimpleLoess directly.
 }
 \details{
-Fitting is done locally.  That is, for the fit at point x, the fit is made using points in 
-     a neighborhood of x, weighted by their distance from x (with differences in 'parametric' 
-     variables being ignored when computing the distance).  The size of the neighborhood is 
-     controlled by alpha (set by 'span' or 'enp.target').  For alpha < 1, the neighborhood includes
-     proportion alpha of the points, and these have tricubic weighting (proportional to 
-     (1 - (dist/maxdist)^3)^3).  For alpha > 1, all points are used, with the 'maximum distance' 
-     assumed to be alpha^(1/p) times the actual maximum distance for p explanatory variables. For 
-     the default family, fitting is by (weighted) least squares. For 'family="symmetric"' a few 
-     iterations of an M-estimation procedure with Tukey's bi-weight are used.  Be aware that as the
-     initial value is the least-squares fit, this need not be a very resistant fit. It can be 
-     important to tune the control list to achieve acceptable speed.  See 'loess.control' for details.
+The second layer of the Spatial locally weigted regression fitting. In this function, all
+   input arguments which are critical for the fit are checked, like the dimension of design
+   matrix can only be less than or equal to 4. Or input x can only by lat and lon if distance
+   is "Latlong".
+
+   Fitting is done locally.  That is, for the fit at point x, the fit is made using points in 
+   a neighborhood of x, weighted by their distance from x (with differences in 'parametric' 
+   variables being ignored when computing the distance).  The size of the neighborhood is 
+   controlled by alpha (set by 'span' or 'enp.target').  For alpha < 1, the neighborhood includes
+   proportion alpha of the points, and these have tricubic weighting (proportional to 
+   (1 - (dist/maxdist)^3)^3).  For alpha > 1, all points are used, with the 'maximum distance' 
+   assumed to be alpha^(1/p) times the actual maximum distance for p explanatory variables. For 
+   the default family, fitting is by (weighted) least squares. For 'family="symmetric"' a few 
+   iterations of an M-estimation procedure with Tukey's bi-weight are used.  Be aware that as the
+   initial value is the least-squares fit, this need not be a very resistant fit. It can be 
+   important to tune the control list to achieve acceptable speed.  See 'loess.control' for details.
 }
 \author{
 Xiaosu Tong, based on 'loess' function of B. D. Ripley, and 'cloess' package of Cleveland,
-    Grosse and Shyu.
+   Grosse and Shyu.
 }
 
