@@ -1,10 +1,10 @@
 Package: Spaloess
 Type: Package
-Title: What the package does (short line)
+Title: Spatially Local Polynomial Regression
 Version: 1.0
 Date: 2015-12-03
 Authors@R: person("Xiaosu", "Tong", email = "tongx@purdue.edu", role = c("aut", "cre"))
-Description: More about what it does (maybe more than one line)
+Description: In the orginial loess, the weights for local fit is calculated based on distance between observations, which is defined as Euclid distance. However, in the Spatial Statistics, the distance between two locations is more reasonable to be defined in Great-circle distance. In this package, all functions of original loess are rewrote to include a distance feature to specify which distance calculation wants to be carried out.
 License: MIT
 Suggests:
     roxygen2 (>= 5.0.0)
