@@ -24,7 +24,7 @@ newPredLoess(y, x, newx, s, weights, robust, span, degree, normalize,
 \item{span}{The parameter alpha which controls the portion of data points used in the local fit.}
 
 \item{degree}{The degree of the polynomials to be used, normally 1 or 2. (Degree 0 is also allowed, but see 
-the ‘Note’.)}
+the 'Note'.)}
 
 \item{normalize}{Should the predictors be normalized to a common scale if there is more than one?  The 
 normalization used is to set the 10% trimmed standard deviation to one. Set to false for 
@@ -40,7 +40,7 @@ for particular predictors?  Terms are specified in the same way as for 'parametr
 can be either "interpolate" or "direct", default is "interpolate".}
 
 \item{cell}{if interpolation is used this controls the accuracy of the approximation via the maximum 
-number of points in a cell in the kd tree. Cells with more than ‘floor(n*span*cell)’ points
+number of points in a cell in the kd tree. Cells with more than 'floor(n*span*cell)' points
 are subdivided.}
 
 \item{family}{If 'gaussian' fitting is by least-squares, and if 'symmetric' a re-descending M estimator is 

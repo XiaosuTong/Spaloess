@@ -5,7 +5,7 @@
 \title{Spatially Local Polynomial Regression Fitting}
 \usage{
 spaloess(formula, data, weights, subset, na.action, model = FALSE,
-  napred = TRUE, span = 0.05, enp.target, degree = 2L,
+  napred = TRUE, span = 0.75, enp.target, degree = 2L,
   parametric = FALSE, distance = "Latlong", drop.square = FALSE,
   normalize = FALSE, family = c("gaussian", "symmetric"),
   method = c("loess", "model.frame"), control = loess.control(...), ...)
@@ -34,7 +34,7 @@ given by 'getOption("na.action")'.}
 be used.}
 
 \item{degree}{The degree of the polynomials to be used, normally 1 or 2. (Degree 0 is also allowed, but see 
-the ‘Note’.)}
+the 'Note'.)}
 
 \item{parametric}{should any terms be fitted globally rather than locally? Terms can be specified by name, 
 number or as a logical vector of the same length as the number of predictors.}

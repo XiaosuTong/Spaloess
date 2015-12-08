@@ -29,7 +29,7 @@
 #'     be used.
 #' @param degree 
 #'     The degree of the polynomials to be used, normally 1 or 2. (Degree 0 is also allowed, but see 
-#'     the ‘Note’.)
+#'     the 'Note'.)
 #' @param parametric 
 #'     should any terms be fitted globally rather than locally? Terms can be specified by name, 
 #'     number or as a logical vector of the same length as the number of predictors.
@@ -70,7 +70,7 @@
 
 
 spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, napred = TRUE, 
-    span = 0.05, enp.target, degree = 2L, parametric = FALSE, distance = "Latlong",
+    span = 0.75, enp.target, degree = 2L, parametric = FALSE, distance = "Latlong",
     drop.square = FALSE, normalize = FALSE, family = c("gaussian", 
         "symmetric"), method = c("loess", "model.frame"), control = loess.control(...), 
     ...) 

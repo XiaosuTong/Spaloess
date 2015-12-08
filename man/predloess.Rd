@@ -7,7 +7,7 @@
 predloess(object, newdata = NULL, se = FALSE, na.action = na.pass, ...)
 }
 \arguments{
-\item{object}{an object fitted by ‘loess’.}
+\item{object}{an object fitted by 'spaloess'.}
 
 \item{newdata}{an optional data frame in which to look for variables with which to predict, or a 
 matrix or vector containing exactly the variables needs for prediction.  If missing, 
@@ -15,8 +15,8 @@ the original data points are used.}
 
 \item{se}{should standard errors be computed? Default is FALSE}
 
-\item{na.action}{function determining what should be done with missing values in data frame ‘newdata’.
-The default is to predict ‘NA’.}
+\item{na.action}{function determining what should be done with missing values in data frame 'newdata'.
+The default is to predict 'NA'.}
 
 \item{...}{arguments passed to or from other methods.}
 }
@@ -29,9 +29,9 @@ This is the first layer of prediction function of spatial locally weigted regres
     In the spaloess function, NA will be removed from the fitting. By passing the spaloess
     object and NA observations to predloess, predction at the locations of NA is carried out.
 
-    When the fit was made using ‘surface = "interpolate"’ (the default), ‘predictLoessf’ 
+    When the fit was made using 'surface = "interpolate"' (the default), 'predloess' 
     will not extrapolate - so points outside an axis-aligned hypercube enclosing the 
-    original data will have missing (‘NA’) predictions and standard errors.
+    original data will have missing ('NA') predictions and standard errors.
 }
 \examples{
     set.seed(66)

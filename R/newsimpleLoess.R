@@ -14,7 +14,7 @@
 #'    The parameter alpha which controls the portion of data points used in the local fit.
 #' @param degree
 #'    The degree of the polynomials to be used, normally 1 or 2. (Degree 0 is also allowed, but see 
-#'    the ‘Note’.)
+#'    the 'Note'.)
 #' @param distance 
 #'    Specify the method of distance calculation. Options: "Euclid", or "Latlong" which is for great 
 #'    circle distance
@@ -37,7 +37,7 @@
 #'    can be either "interpolate" or "direct", default is "interpolate".
 #' @param cell
 #'    if interpolation is used this controls the accuracy of the approximation via the maximum 
-#'    number of points in a cell in the kd tree. Cells with more than ‘floor(n*span*cell)’ points
+#'    number of points in a cell in the kd tree. Cells with more than 'floor(n*span*cell)' points
 #'    are subdivided.
 #' @param iterations
 #'    the number of iterations used in robust fitting.

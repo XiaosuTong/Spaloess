@@ -4,7 +4,7 @@
 #' prediction function for the NAs in the original data set.
 #'
 #' @param object
-#'     an object fitted by ‘loess’.
+#'     an object fitted by 'spaloess'.
 #' @param newdata
 #'     an optional data frame in which to look for variables with which to predict, or a 
 #'     matrix or vector containing exactly the variables needs for prediction.  If missing, 
@@ -12,8 +12,8 @@
 #' @param se
 #'     should standard errors be computed? Default is FALSE
 #' @param na.action
-#'     function determining what should be done with missing values in data frame ‘newdata’.  
-#'     The default is to predict ‘NA’.
+#'     function determining what should be done with missing values in data frame 'newdata'.  
+#'     The default is to predict 'NA'.
 #' @param ...
 #'     arguments passed to or from other methods.
 #' @details
@@ -21,9 +21,9 @@
 #'     In the spaloess function, NA will be removed from the fitting. By passing the spaloess
 #'     object and NA observations to predloess, predction at the locations of NA is carried out.
 #'
-#'     When the fit was made using ‘surface = "interpolate"’ (the default), ‘predictLoessf’ 
+#'     When the fit was made using 'surface = "interpolate"' (the default), 'predloess' 
 #'     will not extrapolate - so points outside an axis-aligned hypercube enclosing the 
-#'     original data will have missing (‘NA’) predictions and standard errors.
+#'     original data will have missing ('NA') predictions and standard errors.
 #' @author 
 #'     Xiaosu Tong, based on 'loess' function of B. D. Ripley, and 'cloess' package of Cleveland,
 #'     Grosse and Shyu.  
