@@ -300,24 +300,30 @@ c larger than 1
       if(rho .le. 0)then
          call ehg182(120)
       end if
-c     compute neighborhood weights
+c     compute neighborhood weights, the default of kernel is 1
+c###  Modified by Xiaosu Tong ###################
       if(kernel.eq.2)then
          do 7 i=1,nf
             if(dist(psi(i)).lt.rho)then
-               i1=dsqrt(rw(psi(i)))
+c             xtdist is 1 means it is Euclid distance calculation
+              if(xtdist.eq.1)then
+                i1=dsqrt(rw(psi(i)))
+c             xtdist is 0 means it is Great circle distance calculation
+              else if(xtdist.eq.0)then
+                i1=rw(psi(i))
+              end if
             else
-               i1=0
+              i1=0
             end if
             w(i)=i1
     7    continue
       else
          do 8 i3=1,nf
-c####  Modified by Xiaosu Tong ###################
-           if(xtdist.eq.1)then
-            w(i3)=dsqrt(dist(psi(i3))/rho)
-           else if(xtdist.eq.0)then
-            w(i3)=dist(psi(i3))/rho
-           end if
+            if(xtdist.eq.1)then
+              w(i3)=dsqrt(dist(psi(i3))/rho)
+            else if(xtdist.eq.0)then
+              w(i3)=dist(psi(i3))/rho
+            end if
 c#################################################
     8    continue
          do 9 i3=1,nf

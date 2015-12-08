@@ -49,6 +49,8 @@
 #'     Should missing observations in the dataset be predicted. Default is TRUE.
 #' @param control 
 #'     control parameters: see 'loess.control'.
+#' @param napred
+#'     logical variable, should NAs in the response variable be predicted. Default is TRUE.
 #' @param ...
 #' @details
 #'     This spaloess function is the first wrapper of the spatial loess fitting procedure. It checks
@@ -70,7 +72,7 @@
 #'     cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong")
 
 
-spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, na.pred = TRUE, 
+spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, napred = TRUE, 
     span = 0.05, enp.target, degree = 2L, parametric = FALSE, distance = "Latlong",
     drop.square = FALSE, normalize = FALSE, family = c("gaussian", 
         "symmetric"), method = c("loess", "model.frame"), control = loess.control(...), 
@@ -81,7 +83,7 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
 
   ## returns a call in which all of the specified arguments are specified by their full names.
   mf <- match.call(expand.dots = FALSE)
-  mf$model <- mf$span <- mf$enp.target <- mf$degree <- mf$parametric <- mf$distance <- NULL
+  mf$model <- mf$span <- mf$enp.target <- mf$degree <- mf$parametric <- mf$distance <- mf$napred <- NULL
   mf$drop.square <- mf$normalize <- mf$family <- mf$method <- mf$control <- mf$... <- NULL
   
   mf[[1L]] <- quote(stats::model.frame)
@@ -152,7 +154,7 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   fit$terms <- mt
   fit$xnames <- nmx
 
-  if(na.pred) {
+  if(napred) {
     print("I am going to add prediction of NA here!")
   } else {
     fit$x <- x

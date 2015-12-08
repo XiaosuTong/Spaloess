@@ -4,7 +4,8 @@
 #' functions wrote in C and Fortran. Notice, it has to be called by spaloess function, do not
 #' call newsimpleLoess directly.
 #'
-#' @param formula FORMULA DESCRIPTION. DO THIS FOR EACH ONE
+#' @param y
+#'    the response variable in the form of vector
 #' @param data
 #' @param weights
 #' @param subset
@@ -185,6 +186,7 @@ newsimpleLoess <- function (y, x, weights, span = 0.05, degree = 2L, distance = 
         drop.square = drop.square, 
         surface = surface, 
         cell = cell, 
+        distance = distance, 
         family = if (iterations <= 1L) "gaussian" else "symmetric", 
         iterations = iterations
     )

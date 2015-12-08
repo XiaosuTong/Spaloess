@@ -5,13 +5,13 @@
 \title{Spatially Local Polynomial Regression Fitting}
 \usage{
 spaloess(formula, data, weights, subset, na.action, model = FALSE,
-  na.pred = TRUE, span = 0.05, enp.target, degree = 2L,
+  napred = TRUE, span = 0.05, enp.target, degree = 2L,
   parametric = FALSE, distance = "Latlong", drop.square = FALSE,
   normalize = FALSE, family = c("gaussian", "symmetric"),
   method = c("loess", "model.frame"), control = loess.control(...), ...)
 }
 \arguments{
-\item{formula}{FORMULA DESCRIPTION. DO THIS FOR EACH ONE}
+\item{formula}{a formula specifying the numeric response and one to four numeric predictors.}
 
 \item{data}{an optional data from, list or environment containing the variables in the model. If 
 not found in 'data', the variables are taken from 'environment', typically the environment 
@@ -26,7 +26,7 @@ given by 'getOption("na.action")'.}
 
 \item{model}{Should the model frame be returned?}
 
-\item{na.pred}{Should missing observations in the dataset be predicted. Default is TRUE.}
+\item{napred}{logical variable, should NAs in the response variable be predicted. Default is TRUE.}
 
 \item{span}{The parameter alpha which controls the degree of smoothing.}
 
@@ -54,6 +54,8 @@ used with Tukey's bi-weight function.}
 \item{method}{Fit the model or just extract the model frame.}
 
 \item{control}{control parameters: see 'loess.control'.}
+
+\item{na.pred}{Should missing observations in the dataset be predicted. Default is TRUE.}
 }
 \description{
 The first layer of the Spatial locally weighted regression, using local fitting with different 
