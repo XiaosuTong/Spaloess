@@ -170,9 +170,9 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   
   if (napred) {
     naPrediction <- predloess(fit, newdata = xna)
-    fit$pred <- cbind(rbind(x.orig, xna), fitted = c(fit$fitted, naPrediction))
+    fit$pred <- cbind(xna, fitted = naPrediction)
   } else {
-    fit$pred <- as.data.frame(cbind(x.orig, fitted = fit$fitted))
+    fit$pred <- NULL
   }
   rownames(fit$pred) <- NULL
 
