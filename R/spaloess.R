@@ -99,6 +99,7 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   nmy <- as.character(attr(mt, "variables"))[2]
 
   x <- mf[, nmx, drop = FALSE]
+  x.orig <- x
 
   ## get the locations of NAs
   if(napred) {
@@ -160,7 +161,7 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   fit$call <- match.call()
   fit$terms <- mt
   fit$xnames <- nmx
-  fit$x <- x
+  fit$x <- x.orig
   fit$y <- y
   fit$weights <- w
 
@@ -169,9 +170,9 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   
   if (napred) {
     naPrediction <- predloess(fit, newdata = xna)
-    fit$pred <- cbind(rbind(x, xna), fitted = c(fit$fitted, naPrediction))
+    fit$pred <- cbind(rbind(x.orig, xna), fitted = c(fit$fitted, naPrediction))
   } else {
-    fit$pred <- as.data.frame(cbind(x, fitted = fit$fitted))
+    fit$pred <- as.data.frame(cbind(x.orig, fitted = fit$fitted))
   }
   rownames(fit$pred) <- NULL
 
