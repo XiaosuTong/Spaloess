@@ -65,7 +65,7 @@ predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, 
         stop("predictors must be longitude and latitude for great circle distance") 
       }
     }  
-     
+
     res <- with(object, newPredLoess(y, x, newx, s, weights, pars$robust,
         pars$span, pars$degree, pars$normalize, pars$parametric,
         pars$drop.square, pars$surface, pars$cell, pars$family,

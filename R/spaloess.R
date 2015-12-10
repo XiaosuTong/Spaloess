@@ -99,7 +99,6 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   nmy <- as.character(attr(mt, "variables"))[2]
 
   x <- mf[, nmx, drop = FALSE]
-  x.orig <- x
 
   ## get the locations of NAs
   if(napred) {
@@ -161,7 +160,7 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   fit$call <- match.call()
   fit$terms <- mt
   fit$xnames <- nmx
-  fit$x <- x.orig
+  fit$x <- x
   fit$y <- y
   fit$weights <- w
 
