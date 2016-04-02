@@ -241,6 +241,7 @@ loess_workspace(int *d, int *n, double *span, int *degree,
 
     nvmax = max(200, N);
     nf = min(N, (int) floor(N * (*span) + 1e-5));
+    printf("%d", nf);
     if(nf <= 0) error(_("span is too small"));
     tau0 = ((*degree) > 1) ? (int)((D + 2) * (D + 1) * 0.5) : (D + 1);
     tau = tau0 - (*sum_drop_sqr);
