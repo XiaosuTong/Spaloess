@@ -460,16 +460,17 @@ c        bug fix 2006-07-04 for k=1, od>1.   (thanks btyner@gmail.com)
 
       subroutine ehg131(x,y,rw,trl,diagl,kernel,k,n,d,nc,ncmax,vc,nv,
      +     nvmax,nf,f,a,c,hi,lo,pi,psi,v,vhit,vval,xi,dist,eta,b,ntol,
-     +     fd,w,vval2,rcond,sing,dd,tdeg,cdeg,lq,lf,setlf,xtdist)
+     +     fd,w,vval2,rcond,sing,dd,tdeg,cdeg,lq,lf,setlf,
+     +     xtdist, alxx, aln)
       logical setlf
       integer identi,d,dd,i1,i2,j,k,kernel,n,nc,ncmax,nf,ntol,nv,
-     +     nvmax,sing,tdeg,vc,xtdist
+     +     nvmax,sing,tdeg,vc,xtdist, aln
       integer lq(nvmax,nf),a(ncmax),c(vc,ncmax),cdeg(8),hi(ncmax),
      +     lo(ncmax),pi(n),psi(n),vhit(nvmax)
       double precision f,fd,rcond,trl
       double precision lf(0:d,nvmax,nf),b(*),delta(8),diagl(n),dist(n),
      +     eta(nf),rw(n),v(nvmax,d),vval(0:d,nvmax),vval2(0:d,nvmax),
-     +     w(nf),x(n,d),xi(ncmax),y(n)
+     +     w(nf),x(n,d),xi(ncmax),y(n), alxx(aln,d)
       external ehg126,ehg182,ehg139,ehg124
       double precision dnrm2
       external dnrm2
@@ -479,7 +480,9 @@ c     X -> b
          call ehg182(101)
       end if
 c     build $k$-d tree
-      call ehg126(d,n,vc,x,v,nvmax)
+c     pass into allx not x, and alln, not n
+c      call ehg126(d,n,vc,x,v,nvmax)
+      call ehg126(d, aln, vc, alxx, v, nvmax)
       nv=vc
       nc=1
       do 3 j=1,vc
@@ -1553,11 +1556,12 @@ c           $Lf sub {:,l,:} = V SIGMA sup {+} U sup T Q sup T W$
       return
       end
 
-      subroutine lowesb(xx,yy,ww,diagl,infl,iv,liv,lv,wv,xtdist)
+      subroutine lowesb(xx,yy,ww,diagl,infl,iv,liv,lv,wv,
+     +     xtdist,alxx,aln)
       logical infl
-      integer liv, lv, xtdist
+      integer liv, lv, xtdist, aln
       integer iv(*)
-      DOUBLE PRECISION xx(*),yy(*),ww(*),diagl(*),wv(*)
+      DOUBLE PRECISION xx(*),yy(*),ww(*),diagl(*),wv(*),alxx(*)
 c Var
       DOUBLE PRECISION trl
       logical setlf
@@ -1587,7 +1591,7 @@ c Var
      +     iv(iv(23)),wv(iv(13)),wv(iv(12)),wv(iv(15)),wv(iv(16)),
      +     wv(iv(18)),ifloor(iv(3)*wv(2)),wv(3),wv(iv(26)),wv(iv(24)),
      +     wv(4),iv(30),iv(33),iv(32),iv(41),iv(iv(25)),wv(iv(34)),
-     +     setlf, xtdist)
+     +     setlf, xtdist, alxx, aln)
       if(iv(14).lt.iv(6)+DBLE(iv(4))/2.D0)then
          call ehg183('k-d tree limited by memory; nvmax=',
      +        iv(14),1,1)

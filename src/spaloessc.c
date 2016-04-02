@@ -48,7 +48,7 @@ void loess_grow (int *parameter, int *a,
 /* These (and many more) are in ./loessf.f : */
 void F77_NAME(lowesa)(double*, int*, int*, int*, int*, double*, double*);
 void F77_NAME(lowesb)(double*, double*, double*, double*, int*, int*, int*,
-		      int*, double*, int*);
+		      int*, double*, int*, double*, int*);
 void F77_NAME(lowesc)(int*, double*, double*, double*, double*, double*);
 void F77_NAME(lowesd)(int*, int*, int*, int*, double*, int*, int*,
 		      double*, int*, int*, int*);
@@ -86,8 +86,9 @@ static void loess_free(void)
 
 void
 /* 7th input argument distance is an int which specify the distance calculation method */
+/* 8th argument is added by Xiaosu Tong, which is passing all x locations to the kd-tree*/
 loess_raw(double *y, double *x, double *weights, double *robust, int *d,
-	  int *n, int *distance, double *span, int *degree, int *nonparametric,
+	  int *n, int *distance, double *allx, int *alln, double *span, int *degree, int *nonparametric,
 	  int *drop_square, int *sum_drop_sqr, double *cell,
 	  char **surf_stat, double *surface, int *parameter,
 	  int *a, double *xi, double *vert, double *vval, double *diagonal,
@@ -110,7 +111,7 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
 		    sum_drop_sqr, setLf);
     v[1] = *cell;/* = v(2) in Fortran (!) */
     if(!strcmp(*surf_stat, "interpolate/none")) {
-	F77_CALL(lowesb)(x, y, robust, &dzero, &zero, iv, &liv, &lv, v, distance);
+	F77_CALL(lowesb)(x, y, robust, &dzero, &zero, iv, &liv, &lv, v, distance, allx, alln);
 	F77_CALL(lowese)(iv, &liv, &lv, v, n, x, surface);
 	loess_prune(parameter, a, xi, vert, vval);
     }
@@ -119,7 +120,7 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
 			 &dzero, &zero, surface, distance);
     }
     else if (!strcmp(*surf_stat, "interpolate/1.approx")) {
-	F77_CALL(lowesb)(x, y, weights, diagonal, &one, iv, &liv, &lv, v, distance);
+	F77_CALL(lowesb)(x, y, weights, diagonal, &one, iv, &liv, &lv, v, distance, allx, alln);
 	F77_CALL(lowese)(iv, &liv, &lv, v, n, x, surface);
 	nsing = iv[29];
 	for(i = 0; i < (*n); i++) *trL = *trL + diagonal[i];
@@ -127,7 +128,7 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
 	loess_prune(parameter, a, xi, vert, vval);
     }
     else if (!strcmp(*surf_stat, "interpolate/2.approx")) {
-	F77_CALL(lowesb)(x, y, robust, &dzero, &zero, iv, &liv, &lv, v, distance);
+	F77_CALL(lowesb)(x, y, robust, &dzero, &zero, iv, &liv, &lv, v, distance, allx, alln);
 	F77_CALL(lowese)(iv, &liv, &lv, v, n, x, surface);
 	nsing = iv[29];
 	F77_CALL(ehg196)(&tau, d, span, trL);
@@ -144,7 +145,7 @@ loess_raw(double *y, double *x, double *weights, double *robust, int *d,
     else if (!strcmp(*surf_stat, "interpolate/exact")) {
 	hat_matrix = (double *) R_alloc((*n)*(*n), sizeof(double));
 	LL = (double *) R_alloc((*n)*(*n), sizeof(double));
-	F77_CALL(lowesb)(x, y, weights, diagonal, &one, iv, &liv, &lv, v, distance);
+	F77_CALL(lowesb)(x, y, weights, diagonal, &one, iv, &liv, &lv, v, distance, allx, alln);
 	F77_CALL(lowesl)(iv, &liv, &lv, v, n, x, hat_matrix);
 	F77_CALL(lowesc)(n, hat_matrix, LL, trL, one_delta, two_delta);
 	F77_CALL(lowese)(iv, &liv, &lv, v, n, x, surface);
@@ -217,7 +218,7 @@ void
 loess_ise(double *y, double *x, double *x_evaluate, double *weights,
 	  double *span, int *degree, int *nonparametric,
 	  int *drop_square, int *sum_drop_sqr, double *cell,
-	  int *d, int *n, int *m, double *fit, double *L, int* distance)
+	  int *d, int *n, int *m, double *fit, double *L, int* distance, double* allx, int* alln)
 {
     int zero = 0, one = 1;
     double dzero = 0.0;
@@ -225,7 +226,7 @@ loess_ise(double *y, double *x, double *x_evaluate, double *weights,
     loess_workspace(d, n, span, degree, nonparametric, drop_square,
 		    sum_drop_sqr, &one);
     v[1] = *cell;
-    F77_CALL(lowesb)(x, y, weights, &dzero, &zero, iv, &liv, &lv, v, distance);
+    F77_CALL(lowesb)(x, y, weights, &dzero, &zero, iv, &liv, &lv, v, distance, allx, alln);
     F77_CALL(lowesl)(iv, &liv, &lv, v, m, x_evaluate, L);
     loess_free();
 }
