@@ -59,7 +59,7 @@
 #'    Grosse and Shyu. 
 #' @export
 
-newPredLoess <- function (y, x, newx, s, weights, robust, span, degree, normalize,
+newPredLoess <- function (y, x, allx, newx, s, weights, robust, span, degree, normalize,
     parametric, drop.square, surface, cell, family, kd, divisor, se = FALSE, distance)
 {
     D <- NCOL(x)
@@ -112,10 +112,13 @@ newPredLoess <- function (y, x, newx, s, weights, robust, span, degree, normaliz
                 as.integer(D), as.integer(N), as.integer(M),
                 fit = double(M), as.integer(xtdist))$fit
         }
-    }
-    else {
+    } else {
         inside <- matrix(FALSE, M, ncol = D)
-        ranges <- apply(x, 2L, range)
+        if(is.null(allx)) {
+          ranges <- apply(x, 2L, range)
+        } else {
+          ranges <- apply(allx, 2L, range)
+        }
         inside <- (x.evaluate <= rep(ranges[2L, ], rep(M, D))) &
             (x.evaluate >= rep(ranges[1L, ], rep(M, D)))
         inside <- inside %*% rep(1, D) == D

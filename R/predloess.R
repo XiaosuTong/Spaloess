@@ -66,7 +66,7 @@ predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, 
       }
     }  
 
-    res <- with(object, newPredLoess(y, x, newx, s, weights, pars$robust,
+    res <- with(object, newPredLoess(y, x, allx, newx, s, weights, pars$robust,
         pars$span, pars$degree, pars$normalize, pars$parametric,
         pars$drop.square, pars$surface, pars$cell, pars$family,
         kd, divisor, se = se, pars$distance))
