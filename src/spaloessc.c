@@ -86,7 +86,8 @@ static void loess_free(void)
 
 void
 /* 7th input argument distance is an int which specify the distance calculation method */
-/* 8th argument is added by Xiaosu Tong, which is passing all x locations to the kd-tree*/
+/* 8th argument allx is added by Xiaosu Tong, which is passing all x locations to the kd-tree*/
+/* 9th argument alln is added by Xiaosu Tong, which is passing nrow of all x to the kd-tree */
 loess_raw(double *y, double *x, double *weights, double *robust, int *d,
 	  int *n, int *distance, double *allx, int *alln, double *span, int *degree, int *nonparametric,
 	  int *drop_square, int *sum_drop_sqr, double *cell,
