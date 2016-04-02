@@ -67,7 +67,7 @@
 #'    initial value is the least-squares fit, this need not be a very resistant fit. It can be 
 #'    important to tune the control list to achieve acceptable speed.  See 'loess.control' for details.
 
-newsimpleLoess <- function (y, x, weights, span = 0.05, degree = 2L, distance = "Latlong", parametric = FALSE, 
+newsimpleLoess <- function (y, x, allx, weights, span = 0.05, degree = 2L, distance = "Latlong", parametric = FALSE, 
     drop.square = FALSE, normalize = FALSE, statistics = "approximate", 
     surface = "interpolate", cell = 0.2, iterations = 1L, trace.hat = "exact") 
 {
@@ -79,11 +79,15 @@ newsimpleLoess <- function (y, x, weights, span = 0.05, degree = 2L, distance = 
     N <- as.integer(NROW(x))
     if (is.na(N)) 
         stop("invalid NCOL(X)")
+    alN <- as.integer(NROW(allx))
+    if (N > alN)
+        stop("invalid NROW(alN)")
     if (!N || !D) 
         stop("invalid 'x'")
     if (!length(y)) 
         stop("invalid 'y'")
     x <- as.matrix(x)
+    allx <- as.matrix(allx)
     storage.mode(x) <- "double"
     storage.mode(y) <- "double"
     storage.mode(weights) <- "double"
@@ -142,7 +146,9 @@ newsimpleLoess <- function (y, x, weights, span = 0.05, degree = 2L, distance = 
             myv = rep(0, 5000)
 
             ## the 7th argument is added by Xiaosu Tong, which is the distance calculation flag
-            z <- .C("loess_raw", y, x, weights, robust, D, N, as.integer(xtdist),
+            ## the 8th argument is added by Xiaosu Tong, which is passing all x locations to the kd-tree
+            ## the 9th argument is added by Xiaosu Tong, which is the nrow of all x location
+            z <- .C("loess_raw", y, x, weights, robust, D, N, as.integer(xtdist), allx, alN,
                 as.double(span), as.integer(degree), as.integer(nonparametric), 
                 as.integer(order.drop.sqr), as.integer(sum.drop.sqr), 
                 as.double(span * cell), as.character(surf.stat), 

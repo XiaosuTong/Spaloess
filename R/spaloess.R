@@ -70,7 +70,7 @@
 
 
 spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, napred = TRUE, 
-    span = 0.75, enp.target, degree = 2L, parametric = FALSE, distance = "Latlong",
+    span = 0.75, enp.target, degree = 2L, parametric = FALSE, distance = "Latlong", alltree = TRUE,
     drop.square = FALSE, normalize = FALSE, family = c("gaussian", 
         "symmetric"), method = c("loess", "model.frame"), control = loess.control(...), 
     ...) 
@@ -80,7 +80,7 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
 
   ## returns a call in which all of the specified arguments are specified by their full names.
   mf <- match.call(expand.dots = FALSE)
-  mf$model <- mf$span <- mf$enp.target <- mf$degree <- mf$parametric <- mf$distance <- mf$napred <- NULL
+  mf$model <- mf$span <- mf$enp.target <- mf$degree <- mf$parametric <- mf$distance <- mf$napred <- mf$alltree <- NULL
   mf$drop.square <- mf$normalize <- mf$family <- mf$method <- mf$control <- mf$... <- NULL
   
   mf[[1L]] <- quote(stats::model.frame)
@@ -105,8 +105,13 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
     index <- is.na(data[,nmy])
     xna <- data[index, nmx]
   }
-
-
+  ## get all locations
+  if(alltree) {
+    allx <- data[, nmx]
+  } else {
+    allx <- x
+  }
+  
   if (any(sapply(x, is.factor))) stop("predictors must all be numeric")
   
   if (distance == "Latlong" | distance == "L") {
@@ -149,10 +154,10 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
       !is.numeric(control$cell) || !is.numeric(iterations)) { 
     stop("invalid 'control' argument")
   } 
- 
+
  ## After checking all arguments' validity, pass all valid arguments into newsimpleLoess function. 
   fit <- newsimpleLoess(
-    y, x, w, span, degree, distance, parametric, drop.square,
+    y, x, allx, w, span, degree, distance, parametric, drop.square,
     normalize, control$statistics, control$surface, control$cell, 
     iterations, control$trace.hat
   )
@@ -163,7 +168,11 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   fit$x <- x
   fit$y <- y
   fit$weights <- w
-
+  if (alltree) {
+    fit$allx <- allx
+  } else {
+    fit$allx <- NULL
+  }
   if (model) fit$model <- mf 
   fit$na.action <- attr(mf, "na.action")
   
