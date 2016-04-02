@@ -128,6 +128,7 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   }
       
   x <- as.matrix(x)
+  allx <- as.matrix(allx)
   D <- ncol(x) 
   nmx <- colnames(x)
   names(nmx) <- nmx

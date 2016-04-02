@@ -88,6 +88,7 @@ newsimpleLoess <- function (y, x, allx, weights, span = 0.05, degree = 2L, dista
         stop("invalid 'y'")
     x <- as.matrix(x)
     allx <- as.matrix(allx)
+    print(x == allx)
     storage.mode(x) <- "double"
     storage.mode(y) <- "double"
     storage.mode(weights) <- "double"
