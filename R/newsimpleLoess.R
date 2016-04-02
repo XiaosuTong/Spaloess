@@ -195,8 +195,10 @@ newsimpleLoess <- function (y, x, allx, weights, span = 0.05, degree = 2L, dista
             as.double(weights), as.double(robust), integer(N),                            
             pseudovalues = double(N))$pseudovalues    
         ## the 7th argument is added by Xiaosu Tong, which is the distance calculation flag
+        ## the 8th argument is added by Xiaosu Tong, which is passing all x locations to the kd-tree
+        ## the 9th argument is added by Xiaosu Tong, which is the nrow of all x location
         zz <- .C("loess_raw", as.double(pseudovalues), x, weights,                        
-            weights, D, N, as.integer(xtdist), as.double(span), as.integer(degree),         
+            weights, D, N, as.integer(xtdist), allx, alN, as.double(span), as.integer(degree),         
             as.integer(nonparametric), as.integer(order.drop.sqr),                        
             as.integer(sum.drop.sqr), as.double(span * cell),                             
             as.character(surf.stat), temp = double(N), parameter = integer(7L),           
