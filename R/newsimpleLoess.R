@@ -88,7 +88,6 @@ newsimpleLoess <- function (y, x, allx, weights, span = 0.05, degree = 2L, dista
         stop("invalid 'y'")
     x <- as.matrix(x)
     allx <- as.matrix(allx)
-    print(x == allx)
     storage.mode(x) <- "double"
     storage.mode(y) <- "double"
     storage.mode(weights) <- "double"
@@ -110,6 +109,7 @@ newsimpleLoess <- function (y, x, allx, weights, span = 0.05, degree = 2L, dista
     nonparametric <- sum(!parametric)
     order.parametric <- order(parametric)
     x <- x[, order.parametric]
+    allx <- allx[, order.parametric]
     order.drop.sqr <- (2L - drop.square)[order.parametric]
     if (degree == 1L && sum.drop.sqr) 
         stop("specified the square of a factor predictor to be dropped when degree = 1")
