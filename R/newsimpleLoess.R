@@ -143,7 +143,7 @@ newsimpleLoess <- function (y, x, allx, weights, span = 0.05, degree = 2L, dista
                 stop("invalid argument 'cell'")
             if (length(degree) != 1L) 
                 stop("invalid argument 'degree'")
-            myv = rep(0, 5000)
+            myv <- rep(0, 5000)
 
             ## the 7th argument is added by Xiaosu Tong, which is the distance calculation flag
             ## the 8th argument is added by Xiaosu Tong, which is passing all x locations to the kd-tree

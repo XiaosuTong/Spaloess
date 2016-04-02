@@ -119,10 +119,12 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
       for(ii in c("la","lo")) {
         indx <- grep(ii, tolower(substr(nmx, 1, 2)))
         x[, indx] <- 2 * pi * x[, indx]/360
+        allx[, indx] <- 2 * pi * x[, indx]/360
       }
     } else {
       stop("predictors must be longitude and latitude for great circle distance") 
     }
+
   }
       
   x <- as.matrix(x)
