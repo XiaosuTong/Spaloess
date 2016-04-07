@@ -47,6 +47,8 @@
 #'     Fit the model or just extract the model frame.
 #' @param napred
 #'     Should missing observations in the dataset be predicted. Default is TRUE.
+#' @param alltree
+#'     Should the kd-tree built based on all observations or only non-NA observations.
 #' @param control 
 #'     control parameters: see 'loess.control'.
 #' @param ...
@@ -70,7 +72,7 @@
 
 
 spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, napred = TRUE, 
-    span = 0.75, enp.target, degree = 2L, parametric = FALSE, distance = "Latlong", alltree = TRUE,
+    span = 0.75, enp.target, degree = 2L, parametric = FALSE, distance = "Latlong", alltree = FALSE,
     drop.square = FALSE, normalize = FALSE, family = c("gaussian", 
         "symmetric"), method = c("loess", "model.frame"), control = loess.control(...), 
     ...) 

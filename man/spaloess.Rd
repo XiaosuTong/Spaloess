@@ -6,9 +6,10 @@
 \usage{
 spaloess(formula, data, weights, subset, na.action, model = FALSE,
   napred = TRUE, span = 0.75, enp.target, degree = 2L,
-  parametric = FALSE, distance = "Latlong", drop.square = FALSE,
-  normalize = FALSE, family = c("gaussian", "symmetric"),
-  method = c("loess", "model.frame"), control = loess.control(...), ...)
+  parametric = FALSE, distance = "Latlong", alltree = FALSE,
+  drop.square = FALSE, normalize = FALSE, family = c("gaussian",
+  "symmetric"), method = c("loess", "model.frame"),
+  control = loess.control(...), ...)
 }
 \arguments{
 \item{formula}{a formula specifying the numeric response and one to four numeric predictors.}
@@ -40,6 +41,8 @@ the 'Note'.)}
 number or as a logical vector of the same length as the number of predictors.}
 
 \item{distance}{Options: "Euclid", or "Latlong" which is for great circle distance}
+
+\item{alltree}{Should the kd-tree built based on all observations or only non-NA observations.}
 
 \item{drop.square}{For fits with more than one predictor and 'degree = 2', should the quadratic term be dropped 
 for particular predictors?  Terms are specified in the same way as for 'parametric'.}
