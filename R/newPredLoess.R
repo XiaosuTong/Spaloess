@@ -1,5 +1,5 @@
 #' @export
-newPredLoess <- function (y, x, allx, newx, s, weights, robust, span, degree, normalize,
+newPredLoess <- function (y, x, allx=NULL, newx, s, weights, robust, span, degree, normalize,
     parametric, drop.square, surface, cell, family, kd, divisor, se = FALSE, distance)
 {
     D <- NCOL(x)
