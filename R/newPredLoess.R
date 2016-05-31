@@ -56,7 +56,7 @@ newPredLoess <- function (y, x, allx=NULL, newx, s, weights, robust, span, degre
         inside <- matrix(FALSE, M, ncol = D)
         ranges <- apply(x, 2L, range)
         print(ranges)
-        print("/n")
+        print(x.evaluate)
         inside <- (x.evaluate <= rep(ranges[2L, ], rep(M, D))) &
             (x.evaluate >= rep(ranges[1L, ], rep(M, D)))
         print(inside)
