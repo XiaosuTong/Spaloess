@@ -2,10 +2,10 @@
 newPredLoess <- function (y, x, allx=NULL, newx, s, weights, robust, span, degree, normalize,
     parametric, drop.square, surface, cell, family, kd, divisor, se = FALSE, distance)
 {
-    D <- NCOL(x)
-    N <- NROW(x)
+    D <- NCOL(allx)
+    N <- NROW(allx)
     M <- NROW(newx)
-    x <- as.matrix(x)
+    x <- as.matrix(allx)
     newx <- as.matrix(newx)
     newx <- newx/rep(divisor, rep(M, D))
     x <- x/rep(divisor, rep(N, D))
@@ -54,11 +54,7 @@ newPredLoess <- function (y, x, allx=NULL, newx, s, weights, robust, span, degre
         }
     } else {
         inside <- matrix(FALSE, M, ncol = D)
-        if(is.null(allx)) {
-          ranges <- apply(x, 2L, range)
-        } else {
-          ranges <- apply(allx, 2L, range)
-        }
+        ranges <- apply(x, 2L, range)
         inside <- (x.evaluate <= rep(ranges[2L, ], rep(M, D))) &
             (x.evaluate >= rep(ranges[1L, ], rep(M, D)))
         inside <- inside %*% rep(1, D) == D
