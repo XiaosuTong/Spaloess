@@ -55,11 +55,8 @@ newPredLoess <- function (y, x, allx=NULL, newx, s, weights, robust, span, degre
     } else {
         inside <- matrix(FALSE, M, ncol = D)
         ranges <- apply(x, 2L, range)
-        print(ranges)
-        print(x.evaluate)
         inside <- (x.evaluate <= rep(ranges[2L, ], rep(M, D))) &
             (x.evaluate >= rep(ranges[1L, ], rep(M, D)))
-        print(inside)
         inside <- inside %*% rep(1, D) == D
         inside[is.na(inside)] <- FALSE
         #M1 is the number of new points want to be fitted
