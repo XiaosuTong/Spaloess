@@ -1,2 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^cran-comments\.md$
+^codecov\.yml$
+.lintr.*
+.git
+.gitignore
+.helper_functions
+.travis.yml
