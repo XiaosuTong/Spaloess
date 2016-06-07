@@ -7,7 +7,7 @@
 spaloess(formula, data, weights, subset, na.action, model = FALSE,
   napred = TRUE, span = 0.75, enp.target, degree = 2L,
   parametric = FALSE, distance = "Latlong", alltree = FALSE,
-  drop.square = FALSE, normalize = FALSE, family = c("gaussian",
+  drop_square = FALSE, normalize = FALSE, family = c("gaussian",
   "symmetric"), method = c("loess", "model.frame"),
   control = loess.control(...), ...)
 }
@@ -44,7 +44,7 @@ number or as a logical vector of the same length as the number of predictors.}
 
 \item{alltree}{Should the kd-tree built based on all observations or only non-NA observations.}
 
-\item{drop.square}{For fits with more than one predictor and 'degree = 2', should the quadratic term be dropped 
+\item{drop_square}{For fits with more than one predictor and 'degree = 2', should the quadratic term be dropped 
 for particular predictors?  Terms are specified in the same way as for 'parametric'.}
 
 \item{normalize}{Should the predictors be normalized to a common scale if there is more than one?  The 
@@ -76,7 +76,7 @@ This spaloess function is the first wrapper of the spatial loess fitting procedu
     x2 <- rnorm(100, mean=38, sd=4)
     y <- 0.1*x1 + 1*x2 - 10 + rnorm(100, 0, 1.3)
     testdata <- data.frame(LON = x1, LAT = x2, tmax = y)
-    cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong")
+    cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong", napred = FALSE)
 }
 \author{
 Xiaosu Tong, based on 'loess' function of B. D. Ripley, and 'cloess' package of Cleveland,
