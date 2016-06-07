@@ -4,3 +4,5 @@
 inst/doc
 .lintr_cache
 .lintr_cache/*
+src/*.o
+src/*.so
