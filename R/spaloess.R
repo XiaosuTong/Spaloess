@@ -33,7 +33,7 @@
 #' @param parametric 
 #'     should any terms be fitted globally rather than locally? Terms can be specified by name, 
 #'     number or as a logical vector of the same length as the number of predictors.
-#' @param drop.square 
+#' @param drop_square 
 #'     For fits with more than one predictor and 'degree = 2', should the quadratic term be dropped 
 #'     for particular predictors?  Terms are specified in the same way as for 'parametric'.
 #' @param normalize 
@@ -68,23 +68,22 @@
 #'     x2 <- rnorm(100, mean=38, sd=4)
 #'     y <- 0.1*x1 + 1*x2 - 10 + rnorm(100, 0, 1.3)
 #'     testdata <- data.frame(LON = x1, LAT = x2, tmax = y)
-#'     cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong")
+#'     cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong", napred = FALSE)
 
-
-spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, napred = TRUE, 
+spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, napred = TRUE,
     span = 0.75, enp.target, degree = 2L, parametric = FALSE, distance = "Latlong", alltree = FALSE,
-    drop.square = FALSE, normalize = FALSE, family = c("gaussian", 
-        "symmetric"), method = c("loess", "model.frame"), control = loess.control(...), 
-    ...) 
-{
+    drop_square = FALSE, normalize = FALSE, family = c("gaussian",
+        "symmetric"), method = c("loess", "model.frame"), control = loess.control(...),
+    ...) {
+
   family <- match.arg(family)
   method <- match.arg(method)
 
   ## returns a call in which all of the specified arguments are specified by their full names.
   mf <- match.call(expand.dots = FALSE)
   mf$model <- mf$span <- mf$enp.target <- mf$degree <- mf$parametric <- mf$distance <- mf$napred <- mf$alltree <- NULL
-  mf$drop.square <- mf$normalize <- mf$family <- mf$method <- mf$control <- mf$... <- NULL
-  
+  mf$drop_square <- mf$normalize <- mf$family <- mf$method <- mf$control <- mf$... <- NULL
+
   mf[[1L]] <- quote(stats::model.frame)
   mf <- eval(mf, parent.frame())
   if (match.arg(method) == "model.frame") return(mf)
@@ -96,74 +95,73 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   if (is.null(w)) w <- rep(1, length(y))
 
   ## nmx is the independent variables name.
-  nmx <- as.character(attr(mt, "variables"))[-(1L:2)]
+  nmx <- as.character(attr(mt, "variables"))[- (1L:2)]
   ## nmy is the response variable name
   nmy <- as.character(attr(mt, "variables"))[2]
 
   x <- mf[, nmx, drop = FALSE]
 
   ## get the locations of NAs
-  if(napred) {
+  if (napred) {
     index <- is.na(data[,nmy])
     xna <- data[index, nmx]
   }
   ## get all locations
-  if(alltree) {
+  if (alltree) {
     allx <- data[, nmx]
   } else {
     allx <- x
   }
-  
+
   if (any(sapply(x, is.factor))) stop("predictors must all be numeric")
-  
+
   if (distance == "Latlong" | distance == "L") {
     if("la" %in% tolower(substr(nmx, 1, 2)) & "lo" %in% tolower(substr(nmx, 1, 2))) {
       for(ii in c("la","lo")) {
         indx <- grep(ii, tolower(substr(nmx, 1, 2)))
-        x[, indx] <- 2 * pi * x[, indx]/360
-        allx[, indx] <- 2 * pi * allx[, indx]/360
+        x[, indx] <- 2 * pi * x[, indx] / 360
+        allx[, indx] <- 2 * pi * allx[, indx] / 360
       }
     } else {
-      stop("predictors must be longitude and latitude for great circle distance") 
+      stop("predictors must be longitude and latitude for great circle distance")
     }
 
   }
-      
+
   x <- as.matrix(x)
   allx <- as.matrix(allx)
-  D <- ncol(x) 
+  D <- ncol(x)
   nmx <- colnames(x)
   names(nmx) <- nmx
 
-  drop.square <- match(nmx, nmx[drop.square], 0L) > 0L 
-  parametric <- match(nmx, nmx[parametric], 0L) > 0L 
-  
+  drop_square <- match(nmx, nmx[drop_square], 0L) > 0L
+  parametric <- match(nmx, nmx[parametric], 0L) > 0L
+
   if (!match(degree, 0L:2L, 0L)) stop("'degree' must be 0, 1 or 2")
-  
+
   ## iteration times for robust fit. If family is gaussian, no robust fit
   iterations <- if (family == "gaussian") 1 else control$iterations
 
   ## calculate the span argument if enp.target is specified
-  if (!missing(enp.target)) { 
-    if (!missing(span)) 
-        warning("both 'span' and 'enp.target' specified: 'span' will be used")
-    else {
-        tau <- switch(degree + 1L, 1, D + 1, (D + 1) * (D + 
-          2)/2) - sum(drop.square)
-        span <- 1.2 * tau/enp.target #calculate the span based on enp.target 
+  if (!missing(enp.target)) {
+    if (!missing(span)) {
+      warning("both 'span' and 'enp.target' specified: 'span' will be used")
+    } else {
+      tau <- switch(degree + 1L, 1, D + 1, (D + 1) * (D + 2) / 2) - sum(drop_square)
+      span <- 1.2 * tau / enp.target #calculate the span based on enp.target
     }
   }
   ## Check the control arguments
-  if (!is.list(control) || !is.character(control$surface) || 
-      !is.character(control$statistics) || !is.character(control$trace.hat) || 
-      !is.numeric(control$cell) || !is.numeric(iterations)) { 
-    stop("invalid 'control' argument")
-  } 
+  if (!is.list(control) || !is.character(control$surface) ||
+      !is.character(control$statistics) || !is.character(control$trace.hat) ||
+      !is.numeric(control$cell) || !is.numeric(iterations)) {
+        stop("invalid 'control' argument")
+  }
 
- ## After checking all arguments' validity, pass all valid arguments into newsimpleLoess function. 
+  ## After checking all arguments' validity, pass all valid arguments into newsimpleLoess function.
   fit <- newsimpleLoess(
-    y, x, allx, w, span, degree, distance, parametric, drop.square,
-    normalize, control$statistics, control$surface, control$cell, 
+    y, x, allx, w, span, degree, distance, parametric, drop_square,
+    normalize, control$statistics, control$surface, control$cell,
     iterations, control$trace.hat
   )
 
@@ -178,9 +176,9 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   } else {
     fit$allx <- x
   }
-  if (model) fit$model <- mf 
+  if (model) fit$model <- mf
   fit$na.action <- attr(mf, "na.action")
-  
+
   if (napred) {
     naPrediction <- predloess(fit, newdata = xna)
     fit$pred <- cbind(xna, fitted = naPrediction)
@@ -192,4 +190,3 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   fit
 
 }
-

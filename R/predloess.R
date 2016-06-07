@@ -36,8 +36,8 @@
 #'     testdata <- data.frame(LON = x1, LAT = x2, tmax = y)
 #'     cars.lo <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong")
 
-predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, ...)
-{
+predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, ...) {
+
     if (!inherits(object, "spaloess")) {
         stop("first argument must be a \"spaloess\" object")
     }
@@ -48,9 +48,9 @@ predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, 
 
     newx <- if (is.null(newdata)) {
         object$x
-    }else if (is.data.frame(newdata)) {
+    } else if (is.data.frame(newdata)) {
         as.matrix(model.frame(delete.response(terms(object)), newdata, na.action = na.action))
-    }else { 
+    } else {
         as.matrix(newdata)
     }
 
@@ -59,16 +59,16 @@ predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, 
       if("la" %in% tolower(substr(nmx, 1, 2)) & "lo" %in% tolower(substr(nmx, 1, 2))) {
         for(ii in c("la","lo")) {
           indx <- grep(ii, tolower(substr(nmx, 1, 2)))
-          newx[, indx] <- 2 * pi * newx[, indx]/360
+          newx[, indx] <- 2 * pi * newx[, indx] / 360
         }
       } else {
-        stop("predictors must be longitude and latitude for great circle distance") 
+        stop("predictors must be longitude and latitude for great circle distance")
       }
-    }  
+    }
 
     res <- with(object, newPredLoess(y, x, allx, newx, s, weights, pars$robust,
         pars$span, pars$degree, pars$normalize, pars$parametric,
-        pars$drop.square, pars$surface, pars$cell, pars$family,
+        pars$drop_square, pars$surface, pars$cell, pars$family,
         kd, divisor, se = se, pars$distance))
 
     if (!is.null(out.attrs <- attr(newdata, "out.attrs"))) {
@@ -80,7 +80,7 @@ predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, 
         }
     }
     if (se){
-        res$df <- object$one.delta^2/object$two.delta
+        res$df <- object$one.delta ^ 2 / object$two.delta
     }
 
     res
