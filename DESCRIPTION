@@ -7,6 +7,7 @@ Authors@R: person("Xiaosu", "Tong", email = "xiaosutong@gmail.com", role = c("au
 Description: In the orginial loess, the weights for local fit is calculated based on distance between observations, which is defined as Euclid distance. However, in the Spatial Statistics, the distance between two locations is more reasonable to be defined in Great-circle distance. In this package, all functions of original loess are rewrote to include a distance feature to specify which distance calculation wants to be carried out.
 License: MIT + file LICENSE
 Suggests:
+    testthat,
     roxygen2 (>= 5.0.0)
 Roxygen: list(wrap = FALSE)
 RoxygenNote: 5.0.1
