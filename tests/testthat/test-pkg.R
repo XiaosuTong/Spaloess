@@ -14,6 +14,7 @@ test_that("spatial loess fit with Great-circle distance", {
   )
 
   temp.lo1 <- spaloess(tmax ~ LON + LAT, training
+    , family = "symmetric"
     , distance = "Latlong"
     , napred = FALSE
     , alltree = TRUE
@@ -21,6 +22,7 @@ test_that("spatial loess fit with Great-circle distance", {
 
   temp.lo2 <- spaloess(tmax ~ LON + LAT, training
     , distance = "Latlong"
+    , family = "symmetric"
     , napred = FALSE
     , control = loess.control(surf="direct")
     , alltree = FALSE
@@ -79,15 +81,42 @@ test_that("spatial loess fit with Euclidean distance", {
   y <- 0.1*x1 + 1*x2 - 10 + rnorm(100, 0, 1.3)
   training <- data.frame(LON = x1, LAT = x2, tmax = y)
 
-  temp.lo0 <- spaloess(tmax ~ LON + LAT, training, method = "model.frame", distance = "Euclid", napred = FALSE, alltree = TRUE)
+  temp.lo0 <- spaloess(tmax ~ LON + LAT
+    , training, method = "model.frame"
+    , distance = "Euclid"
+    , napred = FALSE
+    , alltree = TRUE
+  )
 
-  temp.lo1 <- spaloess(tmax ~ LON + LAT, training, distance = "Euclid", napred = FALSE, alltree = TRUE, normalize = TRUE)
+  temp.lo1 <- spaloess(tmax ~ LON + LAT, training
+    , distance = "Euclid"
+    , napred = FALSE
+    , alltree = FALSE
+    , normalize = TRUE
+    , control = loess.control(statistics = "exact")
+  )
 
-  temp.lo2 <- spaloess(tmax ~ LON + LAT, training, distance = "Euclid", napred = FALSE, control = loess.control(surf="direct"), alltree = FALSE)
+  temp.lo2 <- spaloess(tmax ~ LON + LAT, training
+    , distance = "Euclid"
+    , napred = FALSE
+    , control = loess.control(surf="direct")
+    , alltree = FALSE
+  )
 
-  temp.lo3 <- spaloess(tmax ~ LON + LAT, training, family = "gaussian", distance = "Euclid", napred = FALSE, alltree = FALSE)
+  temp.lo3 <- spaloess(tmax ~ LON + LAT, training
+    , family = "gaussian"
+    , distance = "Euclid"
+    , napred = FALSE
+    , alltree = FALSE
+  )
 
-  temp.lo4 <- spaloess(tmax ~ LON + LAT, training, family = "gaussian", distance = "Euclid", napred = FALSE, control = loess.control(surf="direct"), alltree = FALSE)
+  temp.lo4 <- spaloess(tmax ~ LON + LAT, training
+    , family = "gaussian"
+    , distance = "Euclid"
+    , napred = FALSE
+    , control = loess.control(surf="direct", statistics = "exact")
+    , alltree = FALSE
+  )
 
   # prove it here!
   expect_true(TRUE)
