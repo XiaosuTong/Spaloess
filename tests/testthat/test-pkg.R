@@ -43,6 +43,15 @@ test_that("spatial loess fit with Great-circle distance", {
     , alltree = FALSE
   )
 
+  temp.lo4 <- spaloess(tmax ~ LON + LAT, training
+  	, enp.target = 40
+    , family = "gaussian"
+    , distance = "Latlong"
+    , napred = FALSE
+    , control = loess.control(surf="direct")
+    , alltree = FALSE
+  )
+
   y[1:5] <- NA
   training <- data.frame(LON = x1, LAT = x2, tmax = y)
   temp.lo5 <- spaloess(tmax ~ LON + LAT, training
@@ -51,6 +60,7 @@ test_that("spatial loess fit with Great-circle distance", {
     , napred = TRUE
     , control = loess.control(surf="interpolate")
     , alltree = TRUE
+    , model = TRUE
   )
 
   set.seed(1)
@@ -157,14 +167,16 @@ test_that("spatial loess fit with Euclidean distance", {
     object = temp.lo1, 
     newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
   )
-  
+
   rst1 <- predloess(
     object = temp.lo1, 
     newdata = NULL
   )
+  newdata <- as.matrix(data.frame(LON = testing$LON, LAT = testing$LAT))
+  attr(newdata, "out.attrs") <- attributes(newdata)
   rst1 <- predloess(
     object = temp.lo1, 
-    newdata = as.matrix(data.frame(LON = testing$LON, LAT = testing$LAT))
+    newdata = 
   )
 
   # prove it here!
