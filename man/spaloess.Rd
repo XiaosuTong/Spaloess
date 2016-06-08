@@ -66,7 +66,7 @@ type of distance calculation.
 }
 \details{
 This spaloess function is the first wrapper of the spatial loess fitting procedure. It checks
-    all the validity of all input arguments, and formats arguments like drop,square, parametric.
+    all the validity of all input arguments, and formats arguments like drop_square, parametric.
     Also generate other important arguments, like iteration, and pass all arguments into the 
     second wrapper function: newsimpleLoess
 }
