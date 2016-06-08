@@ -187,6 +187,7 @@ test_that("spatial loess fit with Euclidean distance", {
   temp.lo12 <- spaloess(tmax ~ LON + LAT, training
     , distance = "Euclid"
     , family = "symmetric"
+    , control = loess.control(surf="direct")
     , napred = FALSE
     , alltree = FALSE
     , normalize = TRUE
