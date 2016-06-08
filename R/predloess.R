@@ -61,8 +61,6 @@ predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, 
           indx <- grep(ii, tolower(substr(nmx, 1, 2)))
           newx[, indx] <- 2 * pi * newx[, indx] / 360
         }
-      } else {
-        stop("predictors must be longitude and latitude for great circle distance")
       }
     }
 
