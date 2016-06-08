@@ -2,16 +2,20 @@ newPredLoess <- function (y, x, allx=NULL, newx, s, weights, robust, span, degre
     parametric, drop_square, surface, cell, family, kd, divisor, se = FALSE, distance) {
 
     D <- NCOL(allx)
-    N <- NROW(allx)
+    N <- NROW(x)
+    alN <- NROW(allx)
     M <- NROW(newx)
-    x <- as.matrix(allx)
+    x <- as.matrix(x)
+    allx <- as.matrix(x)
     newx <- as.matrix(newx)
     newx <- newx / rep(divisor, rep(M, D))
     x <- x / rep(divisor, rep(N, D))
+    allx <- allx / rep(divisor, rep(N, D))
     sum_drop_sqr <- sum(drop_square)
     nonparametric <- sum(!parametric)
     order.parametric <- order(parametric)
     x <- x[, order.parametric, drop = FALSE]
+    allx <- allx[, order.parametric, drop = FALSE]
     x.evaluate <- newx[, order.parametric, drop = FALSE]
     order_drop_sqr <- (2L - drop_square)[order.parametric]
     storage.mode(x) <- "double"
@@ -74,7 +78,7 @@ newPredLoess <- function (y, x, allx=NULL, newx, s, weights, robust, span, degre
                   as.integer(nonparametric), as.integer(order_drop_sqr),
                   as.integer(sum_drop_sqr), as.double(span *
                     cell), as.integer(D), as.integer(N), as.integer(M1),
-                  double(M1), L = double(N * M1), as.integer(xtdist))$L
+                  double(M1), L = double(N * M1), as.integer(xtdist), as.double(allx), as.integer(alN))$L
                 tmp <- (matrix(L ^ 2, M1, N) / rep(weights, rep(M1,
                   N))) %*% rep(1, N)
                 se.fit[inside] <- drop(s * sqrt(tmp))
