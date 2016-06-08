@@ -46,9 +46,7 @@ predloess <- function (object, newdata = NULL, se = FALSE, na.action = na.pass, 
         return(fitted(object))
     }
 
-    newx <- if (is.null(newdata)) {
-        object$x
-    } else if (is.data.frame(newdata)) {
+    newx <- if (is.data.frame(newdata)) {
         as.matrix(model.frame(delete.response(terms(object)), newdata, na.action = na.action))
     } else {
         as.matrix(newdata)
