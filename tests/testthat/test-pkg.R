@@ -4,17 +4,67 @@ test_that("spatial loess fit with Great-circle distance", {
   x1 <- rnorm(100, mean=-100, sd=10)
   x2 <- rnorm(100, mean=38, sd=4)
   y <- 0.1*x1 + 1*x2 - 10 + rnorm(100, 0, 1.3)
-  testdata <- data.frame(LON = x1, LAT = x2, tmax = y)
+  training <- data.frame(LON = x1, LAT = x2, tmax = y)
 
-  cars.lo0 <- spaloess(tmax ~ LON + LAT, testdata, method = "model.frame", distance = "Latlong", napred = FALSE, alltree = TRUE)
+  temp.lo0 <- spaloess(tmax ~ LON + LAT, training
+    , method = "model.frame"
+    , distance = "Latlong"
+    , napred = FALSE
+    , alltree = TRUE
+  )
 
-  cars.lo1 <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong", napred = FALSE, alltree = TRUE)
+  temp.lo1 <- spaloess(tmax ~ LON + LAT, training
+    , distance = "Latlong"
+    , napred = FALSE
+    , alltree = TRUE
+  )
 
-  cars.lo2 <- spaloess(tmax ~ LON + LAT, testdata, distance = "Latlong", napred = FALSE, control = loess.control(surf="direct"), alltree = FALSE)
+  temp.lo2 <- spaloess(tmax ~ LON + LAT, training
+    , distance = "Latlong"
+    , napred = FALSE
+    , control = loess.control(surf="direct")
+    , alltree = FALSE
+  )
 
-  cars.lo3 <- spaloess(tmax ~ LON + LAT, testdata, family = "gaussian", distance = "Latlong", napred = FALSE, alltree = FALSE)
+  temp.lo3 <- spaloess(tmax ~ LON + LAT, training
+    , family = "gaussian"
+    , distance = "Latlong"
+    , napred = FALSE
+    , alltree = FALSE
+  )
 
-  cars.lo4 <- spaloess(tmax ~ LON + LAT, testdata, family = "gaussian", distance = "Latlong", napred = FALSE, control = loess.control(surf="direct"), alltree = FALSE)
+  temp.lo4 <- spaloess(tmax ~ LON + LAT, training
+    , family = "gaussian"
+    , distance = "Latlong"
+    , napred = FALSE
+    , control = loess.control(surf="direct")
+    , alltree = FALSE
+  )
+
+  set.seed(1)
+  x1 <- rnorm(100, mean=-100, sd=10)
+  x2 <- rnorm(100, mean=38, sd=4)
+  testing <- data.frame(LON = x1, LAT = x2)
+
+  rst4 <- predloess(
+    object = temp.lo4, 
+    newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
+  )
+
+  rst3 <- predloess(
+    object = temp.lo3, 
+    newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
+  )
+
+  rst2 <- predloess(
+    object = temp.lo2, 
+    newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
+  )
+
+  rst1 <- predloess(
+    object = temp.lo1, 
+    newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
+  )
 
   # prove it here!
   expect_true(TRUE)
@@ -27,17 +77,17 @@ test_that("spatial loess fit with Euclidean distance", {
   x1 <- rnorm(100, mean=-100, sd=10)
   x2 <- rnorm(100, mean=38, sd=4)
   y <- 0.1*x1 + 1*x2 - 10 + rnorm(100, 0, 1.3)
-  testdata <- data.frame(LON = x1, LAT = x2, tmax = y)
+  training <- data.frame(LON = x1, LAT = x2, tmax = y)
 
-  cars.lo0 <- spaloess(tmax ~ LON + LAT, testdata, method = "model.frame", distance = "Euclid", napred = FALSE, alltree = TRUE)
+  temp.lo0 <- spaloess(tmax ~ LON + LAT, training, method = "model.frame", distance = "Euclid", napred = FALSE, alltree = TRUE)
 
-  cars.lo1 <- spaloess(tmax ~ LON + LAT, testdata, distance = "Euclid", napred = FALSE, alltree = TRUE)
+  temp.lo1 <- spaloess(tmax ~ LON + LAT, training, distance = "Euclid", napred = FALSE, alltree = TRUE, normalize = TRUE)
 
-  cars.lo2 <- spaloess(tmax ~ LON + LAT, testdata, distance = "Euclid", napred = FALSE, control = loess.control(surf="direct"), alltree = FALSE)
+  temp.lo2 <- spaloess(tmax ~ LON + LAT, training, distance = "Euclid", napred = FALSE, control = loess.control(surf="direct"), alltree = FALSE)
 
-  cars.lo3 <- spaloess(tmax ~ LON + LAT, testdata, family = "gaussian", distance = "Euclid", napred = FALSE, alltree = FALSE)
+  temp.lo3 <- spaloess(tmax ~ LON + LAT, training, family = "gaussian", distance = "Euclid", napred = FALSE, alltree = FALSE)
 
-  cars.lo4 <- spaloess(tmax ~ LON + LAT, testdata, family = "gaussian", distance = "Euclid", napred = FALSE, control = loess.control(surf="direct"), alltree = FALSE)
+  temp.lo4 <- spaloess(tmax ~ LON + LAT, training, family = "gaussian", distance = "Euclid", napred = FALSE, control = loess.control(surf="direct"), alltree = FALSE)
 
   # prove it here!
   expect_true(TRUE)
