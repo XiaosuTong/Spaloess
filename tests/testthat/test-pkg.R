@@ -249,7 +249,7 @@ test_that("spatial loess fit with Euclidean distance", {
 
   rst11 <- predloess(
     object = temp.lo11, 
-    newdata = data.frame(LON = training$LON, LAT = training$LAT),
+    newdata = data.frame(LON = testing$LON, LAT = testing$LAT),
     se = TRUE
   )
   
