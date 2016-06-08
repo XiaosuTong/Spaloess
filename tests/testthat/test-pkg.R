@@ -157,6 +157,15 @@ test_that("spatial loess fit with Euclidean distance", {
     object = temp.lo1, 
     newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
   )
+  
+  rst1 <- predloess(
+    object = temp.lo1, 
+    newdata = NULL
+  )
+  rst1 <- predloess(
+    object = temp.lo1, 
+    newdata = as.matrix(data.frame(LON = testing$LON, LAT = testing$LAT))
+  )
 
   # prove it here!
   expect_true(TRUE)
