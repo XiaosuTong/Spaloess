@@ -53,7 +53,7 @@ newPredLoess <- function (y, x, allx=NULL, newx, s, weights, robust, span, degre
         }
     } else {
         inside <- matrix(FALSE, M, ncol = D)
-        ranges <- apply(x, 2L, range)
+        ranges <- apply(allx, 2L, range)
         inside <- (x.evaluate <= rep(ranges[2L, ], rep(M, D))) &
             (x.evaluate >= rep(ranges[1L, ], rep(M, D)))
         inside <- inside %*% rep(1, D) == D
