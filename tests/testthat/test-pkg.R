@@ -184,6 +184,14 @@ test_that("spatial loess fit with Euclidean distance", {
     , normalize = TRUE
   )
 
+  temp.lo12 <- spaloess(tmax ~ LON + LAT, training
+    , distance = "Euclid"
+    , family = "symmetric"
+    , napred = FALSE
+    , alltree = FALSE
+    , normalize = TRUE
+  )
+
   temp.lo1 <- spaloess(tmax ~ LON + LAT, training
     , distance = "Euclid"
     , napred = FALSE
@@ -260,6 +268,11 @@ test_that("spatial loess fit with Euclidean distance", {
 
   rst11 <- predloess(
     object = temp.lo11, 
+    newdata = data.frame(LON = testing$LON, LAT = testing$LAT),
+    se = TRUE
+  )
+  rst12 <- predloess(
+    object = temp.lo12, 
     newdata = data.frame(LON = testing$LON, LAT = testing$LAT),
     se = TRUE
   )
