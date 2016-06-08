@@ -43,6 +43,16 @@ test_that("spatial loess fit with Great-circle distance", {
     , alltree = FALSE
   )
 
+  y[1:5] <- NA
+  training <- data.frame(LON = x1, LAT = x2, tmax = y)
+  temp.lo5 <- spaloess(tmax ~ LON + LAT, training
+    , family = "symmetric"
+    , distance = "Latlong"
+    , napred = TRUE
+    , control = loess.control(surf="interpolate")
+    , alltree = TRUE
+  )
+
   set.seed(1)
   x1 <- rnorm(100, mean=-100, sd=10)
   x2 <- rnorm(100, mean=38, sd=4)
@@ -106,7 +116,8 @@ test_that("spatial loess fit with Euclidean distance", {
   temp.lo3 <- spaloess(tmax ~ LON + LAT, training
     , family = "gaussian"
     , distance = "Euclid"
-    , control = loess.control(surf="interpolate", statistics = "exact")
+    , normalize = TRUE
+    , control = loess.control(surf="interpolate", statistics = "approximate", trace.hat = "approximate")
     , napred = FALSE
     , alltree = FALSE
   )
@@ -115,7 +126,8 @@ test_that("spatial loess fit with Euclidean distance", {
     , family = "gaussian"
     , distance = "Euclid"
     , napred = FALSE
-    , control = loess.control(surf="direct", statistics = "exact")
+    , normalize = TRUE
+    , control = loess.control(surf="direct", statistics = "exact", trace.hat = "approximate")
     , alltree = FALSE
   )
 
