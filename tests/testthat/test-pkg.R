@@ -53,9 +53,20 @@ test_that("spatial loess fit with Great-circle distance", {
     , alltree = FALSE
   )
 
+  temp.lo7 <- spaloess(tmax ~ LON + LAT, training
+    , family = "gaussian"
+    , span = 2
+    , distance = "Latlong"
+    , napred = FALSE
+    , enp.target = 40
+    , degree = 2
+    , control = loess.control(surf="direct")
+    , alltree = FALSE
+  )
+
   y[1:5] <- NA
   training <- data.frame(LON = x1, LAT = x2, tmax = y)
-  temp.lo5 <- spaloess(tmax ~ LON + LAT, training
+  temp.lo8 <- spaloess(tmax ~ LON + LAT, training
     , family = "symmetric"
     , distance = "Latlong"
     , napred = TRUE
