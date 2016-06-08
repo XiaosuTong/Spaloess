@@ -64,6 +64,8 @@ test_that("spatial loess fit with Great-circle distance", {
     , model = TRUE
   )
 
+  rst1 <- predloess(object = temp.lo4)
+
   set.seed(1)
   x1 <- rnorm(100, mean=-100, sd=10)
   x2 <- rnorm(100, mean=38, sd=4)
@@ -88,8 +90,6 @@ test_that("spatial loess fit with Great-circle distance", {
     object = temp.lo1, 
     newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
   )
-
-  rst1 <- predloess(object = temp.lo4)
 
   expect_error(
     rst <- predloess(
@@ -149,6 +149,8 @@ test_that("spatial loess fit with Great-circle distance", {
 
 })
 
+
+
 test_that("spatial loess fit with Euclidean distance", {
 
   set.seed(66)
@@ -164,6 +166,13 @@ test_that("spatial loess fit with Euclidean distance", {
     , alltree = TRUE
   )
 
+  temp.lo11 <- spaloess(tmax ~ LON + LAT, training
+    , distance = "Euclid"
+    , napred = FALSE
+    , alltree = FALSE
+    , normalize = TRUE
+  )
+
   temp.lo1 <- spaloess(tmax ~ LON + LAT, training
     , distance = "Euclid"
     , napred = FALSE
@@ -174,6 +183,14 @@ test_that("spatial loess fit with Euclidean distance", {
 
   temp.lo2 <- spaloess(tmax ~ LON + LAT, training
     , distance = "Euclid"
+    , napred = FALSE
+    , control = loess.control(surf="direct", statistics = "exact")
+    , alltree = FALSE
+  )
+
+  temp.lo22 <- spaloess(tmax ~ LON + LAT, training
+    , distance = "Euclid"
+    , family = "gaussian"
     , napred = FALSE
     , control = loess.control(surf="direct", statistics = "exact")
     , alltree = FALSE
@@ -219,11 +236,23 @@ test_that("spatial loess fit with Euclidean distance", {
     se = TRUE
   )
 
+  rst22 <- predloess(
+    object = temp.lo22, 
+    newdata = data.frame(LON = testing$LON, LAT = testing$LAT),
+    se = TRUE
+  )
+
   rst1 <- predloess(
     object = temp.lo1, 
     newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
   )
 
+  rst11 <- predloess(
+    object = temp.lo11, 
+    newdata = data.frame(LON = testing$LON, LAT = testing$LAT),
+    se = TRUE
+  )
+  
   newdata <- as.matrix(data.frame(LON = testing$LON, LAT = testing$LAT))
   attr(newdata, "out.attrs") <- attributes(newdata)
   rst1 <- predloess(
