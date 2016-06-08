@@ -36,6 +36,11 @@ newsimpleLoess <- function (y, x, allx, weights, span = 0.05, degree = 2L, dista
             N - trim), , drop = FALSE], 2L, var))
         x <- x / rep(divisor, rep(N, D))
 
+        trim <- ceiling(0.1 * alN)
+        divisor <- sqrt(apply(apply(allx, 2L, sort)[seq(trim + 1,
+            alN - trim), , drop = FALSE], 2L, var))
+        allx <- allx / rep(divisor, rep(alN, D))
+
     }
     sum_drop_sqr <- sum(drop_square)
     sum_parametric <- sum(parametric)

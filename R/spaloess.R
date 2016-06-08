@@ -171,11 +171,7 @@ spaloess <- function (formula, data, weights, subset, na.action, model = FALSE, 
   fit$x <- x
   fit$y <- y
   fit$weights <- w
-  if (alltree) {
-    fit$allx <- allx
-  } else {
-    fit$allx <- x
-  }
+  fit$allx <- allx
   if (model) fit$model <- mf
   fit$na.action <- attr(mf, "na.action")
 
