@@ -1,5 +1,7 @@
 # Spatial Locally Weighted Regression #
 
+[![Build Status](https://travis-ci.org/XiaosuTong/Spaloess.svg?branch=master)](https://travis-ci.org/XiaosuTong/Spaloess)
+
 This package contains enhancements to the `loess` implementation that comes with base
 R. 
 
