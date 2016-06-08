@@ -43,6 +43,16 @@ test_that("spatial loess fit with Great-circle distance", {
     , alltree = FALSE
   )
 
+  temp.lo6 <- spaloess(tmax ~ LON + LAT, training
+    , family = "gaussian"
+    , distance = "Latlong"
+    , napred = FALSE
+    , enp.target = 40
+    , degree = 2
+    , control = loess.control(surf="direct")
+    , alltree = FALSE
+  )
+
   y[1:5] <- NA
   training <- data.frame(LON = x1, LAT = x2, tmax = y)
   temp.lo5 <- spaloess(tmax ~ LON + LAT, training
@@ -84,6 +94,52 @@ test_that("spatial loess fit with Great-circle distance", {
       object = temp.lo4,
       newdata = data.frame(x = testing$LON, y = testing$LAT)  
     )
+  )
+
+  training <- data.frame(LON = x1, LAT = as.factor(x2), tmax = y)
+  expect_error(
+    temp.lo1 <- spaloess(tmax ~ LON + LAT, training
+      , family = "symmetric"
+      , distance = "Latlong"
+      , napred = FALSE
+      , alltree = TRUE
+    ),
+    "predictors must all be numeric"
+  )
+
+  training <- data.frame(x = x1, y = x2, tmax = y)
+  expect_error(
+    temp.lo1 <- spaloess(tmax ~ x + y, training
+      , family = "symmetric"
+      , distance = "Latlong"
+      , napred = FALSE
+      , alltree = TRUE
+    ),
+    "predictors must be longitude and latitude for great circle distance"
+  )
+
+  training <- data.frame(lat = x1, lon = x2, tmax = y)
+  expect_error(
+    temp.lo1 <- spaloess(tmax ~ lon + lat, training
+      , family = "symmetric"
+      , degree = 3
+      , distance = "Latlong"
+      , napred = FALSE
+      , alltree = TRUE
+    ),
+    "'degree' must be 0, 1 or 2"
+  )
+
+  expect_error(
+    temp.lo1 <- spaloess(tmax ~ lon + lat, training
+      , family = "symmetric"
+      , degree = 2
+      , control = NULL
+      , distance = "Latlong"
+      , napred = FALSE
+      , alltree = TRUE
+    ),
+    "invalid 'control' argument"
   )
 
   # prove it here!
@@ -166,13 +222,14 @@ test_that("spatial loess fit with Euclidean distance", {
     newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
   )
 
-  rst1 <- predloess(object = temp.lo1)
+  rst1 <- predloess(object = temp.lo4)
 
   newdata <- as.matrix(data.frame(LON = testing$LON, LAT = testing$LAT))
   attr(newdata, "out.attrs") <- attributes(newdata)
   rst1 <- predloess(
-    object = temp.lo1, 
-    newdata = newdata
+    object = temp.lo2, 
+    newdata = newdata,
+    se = TRUE
   )
 
 
@@ -184,6 +241,22 @@ test_that("spatial loess fit with Euclidean distance", {
     ),
     "first argument must be a \"spaloess\" object"
   )
+
+  expect_warning(
+    temp.lo2 <- spaloess(tmax ~ LON + LAT, training
+      , distance = "Euclid"
+      , span = 0.2
+      , enp.target = 40
+      , napred = FALSE
+      , control = loess.control(surf="direct", statistics = "exact")
+      , alltree = FALSE
+    )
+  )
+
+
+
+
+
 
   # prove it here!
   expect_true(TRUE)
