@@ -89,6 +89,8 @@ test_that("spatial loess fit with Great-circle distance", {
     newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
   )
 
+  rst1 <- predloess(object = temp.lo4)
+
   expect_error(
     rst <- predloess(
       object = temp.lo4,
@@ -222,8 +224,6 @@ test_that("spatial loess fit with Euclidean distance", {
     newdata = data.frame(LON = testing$LON, LAT = testing$LAT)
   )
 
-  rst1 <- predloess(object = temp.lo4)
-
   newdata <- as.matrix(data.frame(LON = testing$LON, LAT = testing$LAT))
   attr(newdata, "out.attrs") <- attributes(newdata)
   rst1 <- predloess(
@@ -231,8 +231,11 @@ test_that("spatial loess fit with Euclidean distance", {
     newdata = newdata,
     se = TRUE
   )
-
-
+  rst1 <- predloess(
+    object = temp.lo2, 
+    newdata = newdata,
+    se = FALSE
+  )
 
   expect_error(
     rst <- predloess(
