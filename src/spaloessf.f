@@ -125,30 +125,30 @@ c           bottom of while loop
       return
       end
 
-      integer function ehg138(i,z,a,xi,lo,hi,ncmax)
-      logical i1
-      integer i,j,ncmax
-      integer a(ncmax),hi(ncmax),lo(ncmax)
-      DOUBLE PRECISION xi(ncmax),z(8)
-c     descend tree until leaf or ambiguous
-      j=i
-c     top of while loop
-    3 if(a(j).ne.0)then
-         i1=(z(a(j)).ne.xi(j))
-      else
-         i1=.false.
-      end if
-      if(.not.(i1))goto 4
-         if(z(a(j)).le.xi(j))then
-            j=lo(j)
-         else
-            j=hi(j)
-         end if
-         goto 3
-c     bottom of while loop
-    4 ehg138=j
-      return
-      end
+c      integer function ehg138(i,z,a,xi,lo,hi,ncmax)
+c      logical i1
+c      integer i,j,ncmax
+c      integer a(ncmax),hi(ncmax),lo(ncmax)
+c      DOUBLE PRECISION xi(ncmax),z(8)
+cc     descend tree until leaf or ambiguous
+c      j=i
+cc     top of while loop
+c    3 if(a(j).ne.0)then
+c         i1=(z(a(j)).ne.xi(j))
+c      else
+c         i1=.false.
+c      end if
+c      if(.not.(i1))goto 4
+c         if(z(a(j)).le.xi(j))then
+c            j=lo(j)
+c         else
+c            j=hi(j)
+c         end if
+c         goto 3
+cc     bottom of while loop
+c    4 ehg138=j
+c      return
+c      end
 
       subroutine ehg106(il,ir,k,nk,p,pi,n)
 
@@ -533,12 +533,12 @@ c Var
       return
       end
 
-      subroutine ehg140(iw,i,j)
-      integer i,j
-      integer iw(i)
-      iw(i)=j
-      return
-      end
+c#      subroutine ehg140(iw,i,j)
+c      integer i,j
+c      integer iw(i)
+c      iw(i)=j
+c      return
+c      end
 
       subroutine ehg141(trl,n,deg,k,d,nsing,dk,delta1,delta2)
       double precision trl,delta1,delta2
@@ -881,27 +881,27 @@ c           bottom of while loop
       return
       end
 
-      subroutine ehg192(y,d,n,nf,nv,nvmax,vval,lf,lq)
-      integer d,i,i1,i2,j,n,nf,nv,nvmax
-      integer lq(nvmax,nf)
-      DOUBLE PRECISION i3
-      DOUBLE PRECISION lf(0:d,nvmax,nf),vval(0:d,nvmax),y(n)
+c #     subroutine ehg192(y,d,n,nf,nv,nvmax,vval,lf,lq)
+c      integer d,i,i1,i2,j,n,nf,nv,nvmax
+c      integer lq(nvmax,nf)
+c      DOUBLE PRECISION i3
+c      DOUBLE PRECISION lf(0:d,nvmax,nf),vval(0:d,nvmax),y(n)
 
-      do 3 i2=1,nv
-         do 4 i1=0,d
-            vval(i1,i2)=0
-    4    continue
-    3 continue
-      do 5 i=1,nv
-         do 6 j=1,nf
-            i3=y(lq(i,j))
-            do 7 i1=0,d
-               vval(i1,i)=vval(i1,i)+i3*lf(i1,i,j)
-    7       continue
-    6    continue
-    5 continue
-      return
-      end
+c      do 3 i2=1,nv
+c         do 4 i1=0,d
+c            vval(i1,i2)=0
+c    4    continue
+c    3 continue
+c      do 5 i=1,nv
+c         do 6 j=1,nf
+c            i3=y(lq(i,j))
+c            do 7 i1=0,d
+c               vval(i1,i)=vval(i1,i)+i3*lf(i1,i,j)
+c    7       continue
+c    6    continue
+c    5 continue
+c      return
+c      end
 
       DOUBLE PRECISION function ehg128(z,d,ncmax,vc,a,xi,lo,hi,c,v,
      +     nvmax,vval)
@@ -1781,22 +1781,22 @@ c              w,     rcond,sing,    dd,    tdeg,cdeg,  s)
       return
       end
 
-      subroutine lowesr(yy,iv,liv,lv,wv)
-      integer liv,lv
-      integer iv(*)
-      DOUBLE PRECISION yy(*),wv(*)
-
-      external ehg182,ehg192
-      if(.not.(iv(28).ne.172))then
-         call ehg182(172)
-      end if
-      if(.not.(iv(28).eq.173))then
-         call ehg182(173)
-      end if
-      call ehg192(yy,iv(2),iv(3),iv(19),iv(6),iv(14),wv(iv(13)),
-     +     wv(iv(34)),iv(iv(25)))
-      return
-      end
+c #     subroutine lowesr(yy,iv,liv,lv,wv)
+c      integer liv,lv
+c      integer iv(*)
+c      DOUBLE PRECISION yy(*),wv(*)
+c
+c      external ehg182,ehg192
+c      if(.not.(iv(28).ne.172))then
+c         call ehg182(172)
+c      end if
+c      if(.not.(iv(28).eq.173))then
+c         call ehg182(173)
+c      end if
+c      call ehg192(yy,iv(2),iv(3),iv(19),iv(6),iv(14),wv(iv(13)),
+c     +     wv(iv(34)),iv(iv(25)))
+c      return
+c      end
 
       subroutine lowesw(res,n,rw,pi)
 c Tranliterated from Devlin's ratfor
