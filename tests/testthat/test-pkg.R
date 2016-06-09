@@ -88,14 +88,19 @@ test_that("spatial loess fit with Great-circle distance", {
     )
   )
 
+  set.seed(66)
+  x1 <- rnorm(10000, mean=-100, sd=10)
+  x2 <- rnorm(10000, mean=38, sd=4)
+  y <- 0.1*x1 + 1*x2 - 10 + rnorm(10000, 0, 1.3)
+  training <- data.frame(LON = x1, LAT = x2, tmax = y)
   expect_warning(
     temp.lo8 <- spaloess(tmax ~ LON + LAT, training
       , family = "symmetric"
       , distance = "Latlong"
       , napred = FALSE
       , degree = 2
-      , span = 0.1
-      , control = loess.control(surf="direct", cel=0.001)
+      , span = 0.001
+      , control = loess.control(surf="interpolate", cel=0.0001)
       , alltree = FALSE
     )
   )
