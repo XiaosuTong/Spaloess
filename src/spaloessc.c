@@ -363,11 +363,11 @@ switch(*i){
  case 103:MSG("lv too small.     (Discovered by lowesd)")
  case 104:MSG("span too small.   fewer data values than degrees of freedom.")
  case 105:MSG("k>d2MAX in ehg136.  Need to recompile with increased dimensions.")
- case 106:MSG("lwork too small")
- case 107:MSG("invalid value for kernel")
- case 108:MSG("invalid value for ideg")
- case 109:MSG("lowstt only applies when kernel=1.")
- case 110:MSG("not enough extra workspace for robustness calculation")
+/* case 106:MSG("lwork too small")
+/* case 107:MSG("invalid value for kernel")
+/* case 108:MSG("invalid value for ideg")
+/* case 109:MSG("lowstt only applies when kernel=1.")
+ case 110:MSG("not enough extra workspace for robustness calculation") */
  case 120:MSG("zero-width neighborhood. make span bigger")
  case 121:MSG("all data on boundary of neighborhood. make span bigger")
  case 122:MSG("extrapolation not allowed with blending")
@@ -380,23 +380,24 @@ switch(*i){
  case 180:MSG("nv>nvmax in cpvert.")
  case 181:MSG("nt>20 in eval.")
  case 182:MSG("svddc failed in l2fit.")
- case 183:MSG("didnt find edge in vleaf.")
- case 184:MSG("zero-width cell found in vleaf.")
+/* case 183:MSG("didnt find edge in vleaf.")
+ case 184:MSG("zero-width cell found in vleaf.") */
  case 185:MSG("trouble descending to leaf in vleaf.")
  case 186:MSG("insufficient workspace for lowesf.")
  case 187:MSG("insufficient stack space")
- case 188:MSG("lv too small for computing explicit L")
+/* case 188:MSG("lv too small for computing explicit L")
  case 191:MSG("computed trace L was negative; something is wrong!")
- case 192:MSG("computed delta was negative; something is wrong!")
+ case 192:MSG("computed delta was negative; something is wrong!") */
  case 193:MSG("workspace in loread appears to be corrupted")
  case 194:MSG("trouble in l2fit/l2tr")
  case 195:MSG("only constant, linear, or quadratic local models allowed")
  case 196:MSG("degree must be at least 1 for vertex influence matrix")
- case 999:MSG("not yet implemented")
- default: {
+/* case 999:MSG("not yet implemented") */
+/* default: {
      snprintf(msg2, 50, "Assert failed; error code %d\n",*i);
      msg = msg2;
  }
+*/
 }
 warning(msg);
 }
