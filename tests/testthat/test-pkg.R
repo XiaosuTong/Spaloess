@@ -64,6 +64,14 @@ test_that("spatial loess fit with Great-circle distance", {
     , alltree = FALSE
   )
 
+  temp.lo10 <- spaloess(tmax ~ LON + LAT, training
+    , family = "symmetric"
+    , distance = "Latlong"
+    , control = loess.control(surf="interpolate")
+    , napred = FALSE
+    , alltree = FALSE
+  )
+
   expect_warning(
     temp.lo8 <- spaloess(tmax ~ LON + LAT, training
       , family = "gaussian"
@@ -195,6 +203,7 @@ test_that("spatial loess fit with Great-circle distance", {
     ),
     "invalid 'control' argument"
   )
+
 
   # prove it here!
   expect_true(TRUE)
