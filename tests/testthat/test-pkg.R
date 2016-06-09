@@ -64,6 +64,30 @@ test_that("spatial loess fit with Great-circle distance", {
     , alltree = FALSE
   )
 
+  expect_warning(
+    temp.lo8 <- spaloess(tmax ~ LON + LAT, training
+      , family = "gaussian"
+      , distance = "Latlong"
+      , napred = FALSE
+      , degree = 2
+      , span = 0.01
+      , control = loess.control(surf="direct", cel=0.001)
+      , alltree = FALSE
+    )
+  )
+
+  expect_error(
+    temp.lo8 <- spaloess(tmax ~ LON + LAT, training
+      , family = "gaussian"
+      , distance = "Latlong"
+      , napred = FALSE
+      , degree = 2
+      , span = 0.001
+      , control = loess.control(surf="direct", cel=0.001)
+      , alltree = FALSE
+    )
+  )
+
   y[1:5] <- NA
   training <- data.frame(LON = x1, LAT = x2, tmax = y)
   temp.lo8 <- spaloess(tmax ~ LON + LAT, training
@@ -75,7 +99,7 @@ test_that("spatial loess fit with Great-circle distance", {
     , model = TRUE
   )
 
-  rst1 <- predloess(object = temp.lo4)
+  rst1 <- predloess(object = temp.lo4, newdata = NULL)
 
   set.seed(1)
   x1 <- rnorm(100, mean=-100, sd=10)
