@@ -7,3 +7,4 @@
 .gitignore
 .helper_functions
 .travis.yml
+README*
