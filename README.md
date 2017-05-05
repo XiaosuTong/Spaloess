@@ -21,7 +21,7 @@ Here are some of the added features over `loess`:
 - Can predict NA directly without calling `predict.loess` after `loess` to get fitted
 value at NA locations
 - Add `distance` argument which can be different type of distance function: "Euclid",
-"Latlong" for great circle distance, and "Mahal" for Mahalanobis
+"Latlong" for great circle distance
 - Add a function which can generate kd-tree from a dataset.
 - Includes all locations to build the kd-tree. Argument alltree controls this.
 
