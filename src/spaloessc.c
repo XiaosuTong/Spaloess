@@ -392,12 +392,11 @@ switch(*i){
  case 194:MSG("trouble in l2fit/l2tr")
  case 195:MSG("only constant, linear, or quadratic local models allowed")
  case 196:MSG("degree must be at least 1 for vertex influence matrix")
-/* case 999:MSG("not yet implemented") */
-/* default: {
+ case 999:MSG("not yet implemented")
+ default: {
      snprintf(msg2, 50, "Assert failed; error code %d\n",*i);
      msg = msg2;
  }
-*/
 }
 warning(msg);
 }
